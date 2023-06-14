@@ -1,7 +1,7 @@
 import { Base, TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
-export interface AuthModel extends Base {
+export interface UserModel extends Base {
 }
-export declare class AuthModel extends TimeStamps {
+export declare class UserModel extends TimeStamps {
     email: string;
     passwordHash: string;
 }

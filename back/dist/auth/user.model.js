@@ -9,18 +9,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthModel = void 0;
+exports.UserModel = void 0;
 const typegoose_1 = require("@typegoose/typegoose");
 const defaultClasses_1 = require("@typegoose/typegoose/lib/defaultClasses");
-class AuthModel extends defaultClasses_1.TimeStamps {
+class UserModel extends defaultClasses_1.TimeStamps {
 }
 __decorate([
     (0, typegoose_1.prop)({ unique: true }),
     __metadata("design:type", String)
-], AuthModel.prototype, "email", void 0);
+], UserModel.prototype, "email", void 0);
 __decorate([
     (0, typegoose_1.prop)(),
     __metadata("design:type", String)
-], AuthModel.prototype, "passwordHash", void 0);
-exports.AuthModel = AuthModel;
+], UserModel.prototype, "passwordHash", void 0);
+exports.UserModel = UserModel;
 //# sourceMappingURL=user.model.js.map

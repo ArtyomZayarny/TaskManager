@@ -10,12 +10,26 @@ exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const auth_controller_1 = require("./auth.controller");
 const config_1 = require("@nestjs/config");
+const auth_service_1 = require("./auth.service");
+const nestjs_typegoose_1 = require("nestjs-typegoose");
+const user_model_1 = require("./user.model");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
     (0, common_1.Module)({
         controllers: [auth_controller_1.AuthController],
-        imports: [config_1.ConfigModule],
+        imports: [
+            nestjs_typegoose_1.TypegooseModule.forFeature([
+                {
+                    typegooseClass: user_model_1.UserModel,
+                    schemaOptions: {
+                        collection: "users",
+                    },
+                },
+            ]),
+            config_1.ConfigModule,
+        ],
+        providers: [auth_service_1.AuthService],
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;

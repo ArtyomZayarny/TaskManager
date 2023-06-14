@@ -25,13 +25,16 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferschematype" />
+import { UserModel } from "./user.model";
+import { ModelType } from "@typegoose/typegoose/lib/types";
 import { AuthDto } from "./dto/auth.dto";
-import { AuthService } from "./auth.service";
-export declare class AuthController {
-    private readonly authService;
-    constructor(authService: AuthService);
-    register(dto: AuthDto): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, import("./user.model").UserModel> & Omit<import("./user.model").UserModel & Required<{
+export declare class AuthService {
+    private readonly userModel;
+    constructor(userModel: ModelType<UserModel>);
+    createUser(dto: AuthDto): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, UserModel> & Omit<UserModel & Required<{
         _id: import("mongoose").Types.ObjectId;
     }>, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
-    login(): Promise<void>;
+    findUser(email: string): Promise<import("mongoose").Document<unknown, import("@typegoose/typegoose/lib/types").BeAnObject, UserModel> & Omit<UserModel & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }>, "typegooseName"> & import("@typegoose/typegoose/lib/types").IObjectWithTypegooseFunction>;
 }
