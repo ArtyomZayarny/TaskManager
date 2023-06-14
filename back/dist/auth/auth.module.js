@@ -5,21 +5,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthController = void 0;
+exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
+const auth_controller_1 = require("./auth.controller");
 const config_1 = require("@nestjs/config");
-let AuthController = class AuthController {
-    constructor(configService) {
-        this.configService = configService;
-    }
+let AuthModule = class AuthModule {
 };
-AuthController = __decorate([
-    (0, common_1.Controller)("auth"),
-    __metadata("design:paramtypes", [config_1.ConfigService])
-], AuthController);
-exports.AuthController = AuthController;
-//# sourceMappingURL=auth.controller.js.map
+AuthModule = __decorate([
+    (0, common_1.Module)({
+        controllers: [auth_controller_1.AuthController],
+        imports: [config_1.ConfigModule],
+    })
+], AuthModule);
+exports.AuthModule = AuthModule;
+//# sourceMappingURL=auth.module.js.map

@@ -4,8 +4,4 @@ import { ConfigService } from "@nestjs/config";
 @Controller("auth")
 export class AuthController {
   constructor(private readonly configService: ConfigService) {}
-
-  async login() {
-    this.configService.get("TEST");
-  }
 }

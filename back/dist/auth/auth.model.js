@@ -9,17 +9,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthController = void 0;
-const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
-let AuthController = class AuthController {
-    constructor(configService) {
-        this.configService = configService;
-    }
-};
-AuthController = __decorate([
-    (0, common_1.Controller)("auth"),
-    __metadata("design:paramtypes", [config_1.ConfigService])
-], AuthController);
-exports.AuthController = AuthController;
-//# sourceMappingURL=auth.controller.js.map
+exports.AuthModel = void 0;
+const typegoose_1 = require("@typegoose/typegoose");
+const defaultClasses_1 = require("@typegoose/typegoose/lib/defaultClasses");
+class AuthModel extends defaultClasses_1.TimeStamps {
+}
+__decorate([
+    (0, typegoose_1.prop)({ unique: true }),
+    __metadata("design:type", String)
+], AuthModel.prototype, "email", void 0);
+__decorate([
+    (0, typegoose_1.prop)(),
+    __metadata("design:type", String)
+], AuthModel.prototype, "passwordHash", void 0);
+exports.AuthModel = AuthModel;
+//# sourceMappingURL=auth.model.js.map

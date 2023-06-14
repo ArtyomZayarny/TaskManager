@@ -14,6 +14,7 @@ const auth_controller_1 = require("./auth/auth.controller");
 const config_1 = require("@nestjs/config");
 const nestjs_typegoose_1 = require("nestjs-typegoose");
 const mongo_config_1 = require("./configs/mongo.config");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -25,6 +26,7 @@ AppModule = __decorate([
                 inject: [config_1.ConfigService],
                 useFactory: mongo_config_1.getMongoConfig,
             }),
+            auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController, auth_controller_1.AuthController],
         providers: [app_service_1.AppService],
