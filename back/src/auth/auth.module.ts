@@ -1,9 +1,11 @@
 import { Module } from "@nestjs/common";
 import { AuthController } from "./auth.controller";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AuthService } from "./auth.service";
 import { TypegooseModule } from "nestjs-typegoose";
 import { UserModel } from "./user.model";
+import { JwtModule } from "@nestjs/jwt";
+import { getJwtConfig } from "src/configs/jwt.config";
 
 @Module({
   controllers: [AuthController],
@@ -17,6 +19,11 @@ import { UserModel } from "./user.model";
       },
     ]),
     ConfigModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: getJwtConfig,
+    }),
   ],
   providers: [AuthService],
 })
