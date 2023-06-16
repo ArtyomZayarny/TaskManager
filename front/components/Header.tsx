@@ -1,109 +1,27 @@
 "use client";
 
 import { AppContext } from "@/context/app-context";
-import { Menu } from "@headlessui/react";
-import Image from "next/image";
 import React, { useContext } from "react";
-import Avatar from "react-avatar";
-import { Fragment } from "react";
-import { MagnifyingGlassIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+
+import { Logo } from "./Logo";
+import { SearchBar } from "./SearchBar";
+import { ProfileIcon } from "./ProfileIcon";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { BackGround } from "./BackGround";
 
 export const Header = () => {
-  const {
-    setIsModalOpen,
-    isModalOpen,
-    isLogged,
-    logOut,
-    isLoading,
-    setIsLoading,
-    searchString,
-    setSearchString,
-  } = useContext(AppContext);
-
-  const links = [{ href: "/profile", label: "Profile" }];
-
-  const handleSignOut = async () => {
-    await logOut();
-  };
+  const { setIsModalOpen, isModalOpen, isLogged, isLoading } =
+    useContext(AppContext);
 
   return (
     <div className="flex justify-between items-center p-5 bg-gray-500/10">
-      <div
-        className="absolute top-0
-        left-0
-        w-full
-        h-96
-        bg-gradient-to-br
-        from-pink-400
-        to-[#0055D1]
-        rounded-md
-        filter
-        blur-3xl
-        opacity-50
-        -z-50
-        "
-      />
-      <Image
-        src="http://links.papareact.com/c2cdd5"
-        alt="Trello Logo"
-        width={300}
-        height={100}
-        className="w-44 md:w-56 pb-10 md:pb-0 object-contain"
-      />
+      <BackGround />
+      <Logo />
 
       <div className="flex items-center space-x-5 flex-1 justify-end w-full">
-        <form
-          action=""
-          className="flex items-center space-x-5 bg-white rounded-md p-2 shadow-md
-          flex-1 md:flex-initial"
-        >
-          <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search"
-            className="flex-1 outline-none p-2"
-            value={searchString}
-            onChange={(e) => setSearchString(e.target.value)}
-          />
-          <button type="submit" hidden>
-            Search
-          </button>
-        </form>
-        {/* Icon */}
+        <SearchBar />
         {isLogged ? (
-          <Menu>
-            <Menu.Button>
-              <Avatar name="Artem Zaiarnyi" round color="#0055D1" size="40" />
-            </Menu.Button>
-
-            <Menu.Items className="p-5 bg-slate-100 rounded-lg flex flex-col absolute right-0 mt-2 w-56 origin-top-right">
-              {links.map((link) => (
-                /* Use the `active` state to conditionally style the active item. */
-                <Menu.Item key={link.href} as={Fragment}>
-                  {({ active }) => (
-                    <a
-                      href={link.href}
-                      className={`p-2 rounded-sm ${
-                        active
-                          ? "bg-gray-200 text-gray "
-                          : "bg-slate-100 text-black"
-                      }`}
-                    >
-                      {link.label}
-                    </a>
-                  )}
-                </Menu.Item>
-              ))}
-              <Menu.Item
-                key="sign-out"
-                as="div"
-                className={`p-2 rounded-sm hover:bg-gray-200 cursor-pointer`}
-                onClick={handleSignOut}
-              >
-                Sign Out
-              </Menu.Item>
-            </Menu.Items>
-          </Menu>
+          <ProfileIcon />
         ) : (
           <UserCircleIcon
             onClick={() => setIsModalOpen(!isModalOpen)}
