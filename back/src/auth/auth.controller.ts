@@ -1,4 +1,10 @@
-import { BadRequestException, Body, Controller, Post } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  Request,
+} from "@nestjs/common";
 import { AuthDto } from "./dto/auth.dto";
 import { AuthService } from "./auth.service";
 import { USER_ALREADY_REGISTERED_ERROR } from "./auth.constants";
@@ -20,6 +26,7 @@ export class AuthController {
   async login(@Body() { login, password }: AuthDto) {
     //Validate user
     const { email } = await this.authService.validateUser(login, password);
+    console.log("email", email);
 
     //login user
     return this.authService.login(email);
