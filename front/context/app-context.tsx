@@ -8,6 +8,7 @@ export const AppContextProvider = ({ children }) => {
   const [isLogged, setIsLoged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
+  const [searchString, setSearchString] = useState("");
 
   useEffect(() => {
     //check if storarage have token
@@ -31,6 +32,8 @@ export const AppContextProvider = ({ children }) => {
     setIsLoading,
     error,
     setError,
+    searchString,
+    setSearchString,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
