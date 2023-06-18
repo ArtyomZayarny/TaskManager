@@ -5,6 +5,8 @@ import { Dialog } from "@headlessui/react";
 import React, { useContext, useState } from "react";
 import { Button } from "./Button";
 import Link from "next/link";
+import { REQUEST_LOGIN, REQUEST_REGISTER } from "@/requests";
+import { AuthRequest, setAccessTokenToLS } from "@/utils";
 
 export const Modal = () => {
   const {
@@ -12,7 +14,6 @@ export const Modal = () => {
     setIsModalOpen,
     setIsLoged,
     setIsLoading,
-    isLoading,
     setError,
     error,
     modalType,
@@ -24,7 +25,6 @@ export const Modal = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-
     const creads = { login: email, password };
     setIsLoading(true);
     return signIn ? login(creads) : register(creads);
@@ -32,74 +32,60 @@ export const Modal = () => {
   const signIn = modalType === "Sign in";
 
   const toggleModalTypeHandler = () => {
+    setError("");
+    clearForm();
     signIn ? setModalType("Sign up") : setModalType("Sign in");
+  };
+
+  const clearForm = () => {
+    setEmail("");
+    setPassword("");
+  };
+
+  const afterLogin = () => {
+    setIsModalOpen(false);
+    setIsLoged(true);
+    setIsLoading(false);
+    clearForm();
+  };
+
+  const afterRegister = () => {
+    setIsLoged(true);
+    setIsLoading(false);
+    setCongrat(true);
+  };
+
+  const setErrors = (response) => {
+    setIsLoading(false);
+    setError(response.message);
   };
 
   const login = async (creads) => {
     try {
-      const res = await fetch("http://localhost:3001/api/auth/login", {
-        method: "POST",
-        body: JSON.stringify(creads),
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const response = await res.json();
+      const response = await AuthRequest(REQUEST_LOGIN, creads);
 
-      //Check Errors
-      if (!response.error) {
-        if (!localStorage.getItem("access_token")) {
-          localStorage.setItem(
-            "access_token",
-            JSON.stringify(response?.access_token)
-          );
-        }
-        setIsModalOpen(false);
-        setIsLoged(true);
-        setIsLoading(false);
+      if (!response.error && !localStorage.getItem("access_token")) {
+        setAccessTokenToLS(response?.access_token);
+        afterLogin();
       }
-      console.log("response", response);
-      setIsLoading(false);
-      setError(response.message);
+
+      response?.error && setErrors(response);
     } catch (e) {
-      console.log("errror", e);
       setIsLoading(false);
     }
   };
 
   const register = async (creads) => {
-    console.log("register", creads);
     try {
-      const res = await fetch("http://localhost:3001/api/auth/register", {
-        method: "POST",
-        body: JSON.stringify(creads),
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const response = await res.json();
+      const response = await AuthRequest(REQUEST_REGISTER, creads);
 
-      //Check Errors
-      if (!response.error) {
-        setCongrat(true);
-        console.log("User successfully registered");
-        // if (!localStorage.getItem("access_token")) {
-        //   localStorage.setItem(
-        //     "access_token",
-        //     JSON.stringify(response?.access_token)
-        //   );
-        // }
-        // setIsModalOpen(false);
-        // setIsLoged(true);
-        // setIsLoading(false);
+      if (!response.error && !localStorage.getItem("access_token")) {
+        setAccessTokenToLS(response?.access_token);
+        afterRegister();
       }
-      console.log("response", response);
-      setIsLoading(false);
-      setError(response.message);
+
+      response?.error && setErrors(response);
     } catch (e) {
-      console.log("errror", e);
       setIsLoading(false);
     }
   };
@@ -114,6 +100,7 @@ export const Modal = () => {
               type="email"
               placeholder="Email"
               value={email}
+              required
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
@@ -123,6 +110,7 @@ export const Modal = () => {
               type="password"
               value={password}
               placeholder="Password"
+              required
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
@@ -156,18 +144,25 @@ export const Modal = () => {
     return (
       <div className="text-center">
         <p>You successfully registered!</p>
-        <p>Go to the dashboard, to create you first tasks!</p>
-        <Link href="/">
+        <p>Go to the dashboard, to create your first tasks!</p>
+        <Link href="/" onClick={onModalClosehandler}>
           <span className="my-2 inline-block text-blue-500">My Dashboard</span>
         </Link>
       </div>
     );
   };
 
+  const onModalClosehandler = () => {
+    setIsModalOpen(false);
+    setCongrat(false);
+    setEmail("");
+    setPassword("");
+    setModalType("Sign in");
+  };
   return (
     <Dialog
       open={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
+      onClose={onModalClosehandler}
       className="relative z-50 w-full max-w-md s"
     >
       {/* The backdrop, rendered as a fixed sibling to the panel container */}
