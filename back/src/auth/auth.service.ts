@@ -14,15 +14,6 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async createUser(dto: AuthDto) {
-    const salt = await genSalt(10);
-    const newUser = new this.userModel({
-      email: dto.login,
-      passwordHash: await hash(dto.password, salt),
-    });
-    return newUser.save();
-  }
-
   async findUser(email: string) {
     return this.userModel.findOne({ email }).exec();
   }
@@ -54,5 +45,16 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async createUser(dto: AuthDto) {
+    const salt = await genSalt(10);
+    const newUser = new this.userModel({
+      email: dto.login,
+      passwordHash: await hash(dto.password, salt),
+    });
+    const newSavedUser = newUser.save();
+
+    return await this.login((await newSavedUser).email);
   }
 }
