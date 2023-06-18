@@ -25,7 +25,7 @@ export const Header = () => {
         ) : (
           <UserCircleIcon
             onClick={() => setIsModalOpen(!isModalOpen)}
-            className={`inline-block h-10 w-10 text-[#000] mr-1 ${
+            className={` cursor-pointer inline-block h-10 w-10 text-[#000] mr-1 ${
               isLoading && "animate-spin"
             }`}
           />

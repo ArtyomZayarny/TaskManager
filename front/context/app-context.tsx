@@ -9,6 +9,7 @@ export const AppContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const [searchString, setSearchString] = useState("");
+  const [modalType, setModalType] = useState("Sign in");
 
   useEffect(() => {
     //check if storarage have token
@@ -34,6 +35,8 @@ export const AppContextProvider = ({ children }) => {
     setError,
     searchString,
     setSearchString,
+    modalType,
+    setModalType,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
