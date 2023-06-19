@@ -1,4 +1,7 @@
 "use client";
+
+import { getTodosGroupedByColumn } from "@/lib/getTodosGroupedByColumn";
+import { Board, Column, TypedColumn } from "@/types";
 import React, { createContext, useEffect, useState } from "react";
 
 type AppContextType = {
@@ -14,12 +17,17 @@ type AppContextType = {
   setSearchString: (v: string) => void;
   modalType: string;
   setModalType: (v: string) => void;
+  getBoard: (board: Board) => Board;
 };
 
 export const AppContext = createContext({} as AppContextType);
 
 type Props = {
   children: React.ReactNode;
+};
+
+const initialBoard = {
+  columns: new Map<TypedColumn, Column>(),
 };
 
 export const AppContextProvider = ({ children }: Props) => {
@@ -29,6 +37,7 @@ export const AppContextProvider = ({ children }: Props) => {
   const [error, setError] = useState("");
   const [searchString, setSearchString] = useState("");
   const [modalType, setModalType] = useState("Sign in");
+  const [board, setBoard] = useState(initialBoard);
 
   useEffect(() => {
     //check if storarage have token
@@ -40,6 +49,11 @@ export const AppContextProvider = ({ children }: Props) => {
   const logOut = async () => {
     await localStorage.removeItem("access_token");
     await setIsLoged(false);
+  };
+
+  const getBoard = async () => {
+    const GroupedBoard = await getTodosGroupedByColumn();
+    setBoard(GroupedBoard);
   };
 
   const value = {
@@ -56,6 +70,8 @@ export const AppContextProvider = ({ children }: Props) => {
     setSearchString,
     modalType,
     setModalType,
+    getBoard,
+    board,
   } as unknown as AppContextType;
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
