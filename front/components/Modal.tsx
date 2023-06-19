@@ -143,6 +143,7 @@ export const Modal = () => {
     setCongrat(false);
     setEmail("");
     setPassword("");
+    setError("");
     setModalType("Sign in");
   };
 
