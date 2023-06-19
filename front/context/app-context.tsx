@@ -18,6 +18,8 @@ type AppContextType = {
   modalType: string;
   setModalType: (v: string) => void;
   getBoard: (board: Board) => Board;
+  showAddTaskModal: boolean;
+  setShowAddTaskModal: (v: boolean) => void;
 };
 
 export const AppContext = createContext({} as AppContextType);
@@ -38,6 +40,7 @@ export const AppContextProvider = ({ children }: Props) => {
   const [searchString, setSearchString] = useState("");
   const [modalType, setModalType] = useState("Sign in");
   const [board, setBoard] = useState(initialBoard);
+  const [showAddTaskModal, setShowAddTaskModal] = useState(false);
 
   useEffect(() => {
     //check if storarage have token
@@ -76,6 +79,8 @@ export const AppContextProvider = ({ children }: Props) => {
     setModalType,
     getBoard,
     board,
+    showAddTaskModal,
+    setShowAddTaskModal,
   } as unknown as AppContextType;
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
