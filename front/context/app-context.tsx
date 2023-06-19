@@ -46,6 +46,10 @@ export const AppContextProvider = ({ children }: Props) => {
     }
   }, []);
 
+  useEffect(() => {
+    getBoard();
+  }, []);
+
   const logOut = async () => {
     await localStorage.removeItem("access_token");
     await setIsLoged(false);
@@ -53,7 +57,7 @@ export const AppContextProvider = ({ children }: Props) => {
 
   const getBoard = async () => {
     const GroupedBoard = await getTodosGroupedByColumn();
-    setBoard(GroupedBoard);
+    await setBoard(GroupedBoard);
   };
 
   const value = {

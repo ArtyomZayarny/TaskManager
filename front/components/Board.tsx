@@ -7,7 +7,7 @@ import Column from "./Column";
 import { AppContext } from "@/context/app-context";
 
 export default function Board() {
-  const { getBoard, board } = useContext(AppContext);
+  const { board } = useContext(AppContext);
   //   const [getBoard, board, setBoardState, updateTodoInDB] = useBoardStore(
   //     (state) => [
   //       state.getBoard,
@@ -17,9 +17,9 @@ export default function Board() {
   //     ]
   //   );
 
-  useEffect(() => {
-    getBoard();
-  }, [getBoard]);
+  // useEffect(() => {
+  //   getBoard();
+  // }, [getBoard]);
 
   const handleOnDrugEnd = (result: DropResult) => {
     const { destination, source, type } = result;
