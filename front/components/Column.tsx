@@ -20,7 +20,14 @@ const idToColumnText: { [key in TypedColumn]: string } = {
 };
 
 function Column({ id, todos, index }: Props) {
-  const { searchString, setSearchString } = useContext(AppContext);
+  const {
+    searchString,
+    setSearchString,
+    isLogged,
+    setIsModalOpen,
+    showAddTaskModal,
+    setShowAddTaskModal,
+  } = useContext(AppContext);
   //   const [searchString, setNewTaskType] = useBoardStore((state) => [
   //     state.searchString,
   //     state.setNewTaskType,
@@ -28,6 +35,8 @@ function Column({ id, todos, index }: Props) {
   //  const openModal = useModalStore((state) => state.openModal);
 
   const handleAddTodo = () => {
+    console.log("isLoged", isLogged);
+    return isLogged ? setShowAddTaskModal(true) : setIsModalOpen(true);
     // setNewTaskType(id);
     // openModal();
   };
