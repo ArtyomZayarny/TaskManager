@@ -4,9 +4,12 @@ import { AppContext } from "@/context/app-context";
 import { Dialog } from "@headlessui/react";
 import React, { useContext, useState } from "react";
 import { Button } from "./Button";
-import Link from "next/link";
 import { REQUEST_LOGIN, REQUEST_REGISTER } from "@/requests";
 import { AuthRequest, setAccessTokenToLS } from "@/utils";
+import { Input } from "./Input";
+import { ErrorMessage } from "./Error";
+import { Congrats } from "./Congrats";
+import { AuthResponse, UserCreads } from "@/types";
 
 export const Modal = () => {
   const {
@@ -19,17 +22,19 @@ export const Modal = () => {
     modalType,
     setModalType,
   } = useContext(AppContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [congrats, setCongrat] = useState(false);
 
-  const onSubmitHandler = async (e) => {
+  const signIn = modalType === "Sign in";
+
+  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const creads = { login: email, password };
+    const creads: UserCreads = { login: email, password };
     setIsLoading(true);
     return signIn ? login(creads) : register(creads);
   };
-  const signIn = modalType === "Sign in";
 
   const toggleModalTypeHandler = () => {
     setError("");
@@ -55,12 +60,12 @@ export const Modal = () => {
     setCongrat(true);
   };
 
-  const setErrors = (response) => {
+  const setErrors = (response: AuthResponse) => {
     setIsLoading(false);
     setError(response.message);
   };
 
-  const login = async (creads) => {
+  const login = async (creads: UserCreads) => {
     try {
       const response = await AuthRequest(REQUEST_LOGIN, creads);
 
@@ -75,7 +80,7 @@ export const Modal = () => {
     }
   };
 
-  const register = async (creads) => {
+  const register = async (creads: UserCreads) => {
     try {
       const response = await AuthRequest(REQUEST_REGISTER, creads);
 
@@ -90,38 +95,31 @@ export const Modal = () => {
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { type, value } = e.target;
+    switch (type) {
+      case "email":
+        return setEmail(value);
+      case "password":
+        return setPassword(value);
+    }
+  };
+
   const AuthForm = () => {
     return (
       <>
         <form onSubmit={onSubmitHandler} className=" w-300">
           <div className="mb-5">
-            <input
-              className="w-full border border-gray-300 rounded-md outline-none p-2"
-              type="email"
-              placeholder="Email"
-              value={email}
-              required
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <Input type="email" onChangeHandler={handleChange} value={email} />
           </div>
           <div className="mb-5">
-            <input
-              className="w-full border border-gray-300 rounded-md outline-none p-2"
+            <Input
               type="password"
+              onChangeHandler={handleChange}
               value={password}
-              placeholder="Password"
-              required
-              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          {error && (
-            <div className="mb-5">
-              <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-                <span className="font-medium">Oh, snapp! </span>
-                <span className="font-medium">{error}</span>
-              </p>
-            </div>
-          )}
+          {error && <ErrorMessage error={error} />}
           <Button
             type="submit"
             color={signIn ? "blue" : "green"}
@@ -140,18 +138,6 @@ export const Modal = () => {
     );
   };
 
-  const congratContent = () => {
-    return (
-      <div className="text-center">
-        <p>You successfully registered!</p>
-        <p>Go to the dashboard, to create your first tasks!</p>
-        <Link href="/" onClick={onModalClosehandler}>
-          <span className="my-2 inline-block text-blue-500">My Dashboard</span>
-        </Link>
-      </div>
-    );
-  };
-
   const onModalClosehandler = () => {
     setIsModalOpen(false);
     setCongrat(false);
@@ -159,18 +145,15 @@ export const Modal = () => {
     setPassword("");
     setModalType("Sign in");
   };
+
   return (
     <Dialog
       open={isModalOpen}
       onClose={onModalClosehandler}
       className="relative z-50 w-full max-w-md s"
     >
-      {/* The backdrop, rendered as a fixed sibling to the panel container */}
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-
-      {/* Full-screen container to center the panel */}
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        {/* The actual dialog panel  */}
         <Dialog.Panel
           className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left
             align-middle shadow-xl transition-all"
@@ -178,7 +161,11 @@ export const Modal = () => {
           <Dialog.Title className="px-5 text-center font-bold mb-5">
             {congrats ? "Congratulations" : modalType}
           </Dialog.Title>
-          {congrats ? congratContent() : AuthForm()}
+          {congrats ? (
+            <Congrats onModalClosehandler={onModalClosehandler} />
+          ) : (
+            AuthForm()
+          )}
         </Dialog.Panel>
       </div>
     </Dialog>

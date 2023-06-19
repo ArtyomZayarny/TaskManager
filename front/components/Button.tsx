@@ -1,16 +1,25 @@
 import { AppContext } from "@/context/app-context";
 import { useContext } from "react";
 
+type Props = {
+  text: string;
+  color: string;
+  type: string;
+  withLoading?: boolean;
+  toggleModalTypeHandler?: () => void;
+};
+
 export const Button = ({
   text,
   color,
   type,
   withLoading = false,
   toggleModalTypeHandler,
-}) => {
+}: Props) => {
   const { isLoading } = useContext(AppContext);
 
   const content = withLoading ? (isLoading ? "Loading..." : text) : text;
+
   return (
     <button
       onClick={toggleModalTypeHandler}

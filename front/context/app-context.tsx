@@ -1,13 +1,32 @@
 "use client";
 import React, { createContext, useEffect, useState } from "react";
 
-export const AppContext = createContext({});
+type AppContextType = {
+  isModalOpen: boolean;
+  setIsModalOpen: (v: boolean) => void;
+  isLogged: boolean;
+  setIsLoged: (v: boolean) => void;
+  isLoading: boolean;
+  setIsLoading: (v: boolean) => void;
+  error: string;
+  setError: (v: string) => void;
+  searchString: string;
+  setSearchString: (v: string) => void;
+  modalType: string;
+  setModalType: (v: string) => void;
+};
 
-export const AppContextProvider = ({ children }) => {
+export const AppContext = createContext({} as AppContextType);
+
+type Props = {
+  children: React.ReactNode;
+};
+
+export const AppContextProvider = ({ children }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLogged, setIsLoged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const [error, setError] = useState("");
   const [searchString, setSearchString] = useState("");
   const [modalType, setModalType] = useState("Sign in");
 
@@ -37,6 +56,6 @@ export const AppContextProvider = ({ children }) => {
     setSearchString,
     modalType,
     setModalType,
-  };
+  } as unknown as AppContextType;
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
