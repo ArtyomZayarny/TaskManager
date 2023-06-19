@@ -2,6 +2,7 @@ import { Modal } from "@/components/Modal";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { AppContextProvider } from "@/context/app-context";
+import AddTaskModal from "@/components/AddTaskModal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
         <AppContextProvider>
           {children}
           <Modal />
+          <AddTaskModal />
         </AppContextProvider>
       </body>
     </html>
