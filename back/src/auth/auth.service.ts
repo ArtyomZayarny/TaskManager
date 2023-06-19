@@ -6,6 +6,7 @@ import { AuthDto } from "./dto/auth.dto";
 import { compare, genSalt, hash } from "bcrypt";
 import { USER_NOT_FOUNDED, WRONG_PASSWORD } from "./auth.constants";
 import { JwtService } from "@nestjs/jwt";
+import { Types } from "mongoose";
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,7 @@ export class AuthService {
   async validateUser(
     email: string,
     password: string
-  ): Promise<Pick<UserModel, "email">> {
+  ): Promise<Pick<UserModel, "email" | "_id">> {
     //Check if user exist
     const user = await this.findUser(email);
 
@@ -36,14 +37,15 @@ export class AuthService {
       throw new UnauthorizedException(WRONG_PASSWORD);
     }
 
-    return { email: user.email };
+    return { email: user.email, _id: user._id };
   }
 
-  async login(email: string) {
+  async login(email: string, userId: Types.ObjectId) {
     //create jwt token
     const payload = { email };
     return {
       access_token: await this.jwtService.signAsync(payload),
+      userId,
     };
   }
 
@@ -55,6 +57,13 @@ export class AuthService {
     });
     const newSavedUser = newUser.save();
 
-    return await this.login((await newSavedUser).email);
+    return await this.login(
+      (
+        await newSavedUser
+      ).email,
+      (
+        await newSavedUser
+      )._id
+    );
   }
 }

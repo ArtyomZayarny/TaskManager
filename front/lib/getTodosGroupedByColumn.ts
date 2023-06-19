@@ -26,7 +26,7 @@ export const getTodosGroupedByColumn = async () => {
   }, new Map<TypedColumn, Column>());
 
   //Add empty todos
-  const columnTypes: TypedColumn[] = ["done", "inprogress", "todo"];
+  const columnTypes: TypedColumn[] = ["todo", "inprogress", "done"];
   for (const columnType of columnTypes) {
     if (!columns.get(columnType)) {
       columns.set(columnType, {

@@ -14,14 +14,20 @@ import TaskTypeRadio from "./TaskTypeRadio";
 import Image from "next/image";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { AppContext } from "@/context/app-context";
+import { TaskContext } from "@/context/task-context";
 
 export default function AddTaskModal() {
   const imagePickerRef = useRef<HTMLInputElement>(null);
   const { showAddTaskModal, setShowAddTaskModal } = useContext(AppContext);
+  const {
+    newTaskInput,
+    setNewTaskInput,
+    image,
+    setImage,
+    addTask,
+    newTaskType,
+  } = useContext(TaskContext);
 
-  //need to be store int context
-  const [newTaskInput, setNewTaskInput] = useState("");
-  const [image, setImage] = useState(null);
   //   const [isOpen, closeModal] = useModalStore((state) => [
   //     state.isOpen,
   //     state.closeModal,
@@ -39,9 +45,9 @@ export default function AddTaskModal() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // if (!newTaskInput) return;
+    if (!newTaskInput) return;
     //add task
-    //   addTask(newTaskInput, newTaskType, image);
+    addTask(newTaskInput, newTaskType, image);
 
     // setImage(null);
     // closeModal();

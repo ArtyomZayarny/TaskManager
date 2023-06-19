@@ -4,6 +4,7 @@ import { Draggable, Droppable } from "react-beautiful-dnd";
 import TodoCard from "./TodoCard";
 import { Todo, TypedColumn } from "@/types";
 import { AppContext } from "@/context/app-context";
+import { TaskContext } from "@/context/task-context";
 //import { useBoardStore } from "@/store/BoardStore";
 //import { useModalStore } from "@/store/ModalStore";
 
@@ -32,13 +33,12 @@ function Column({ id, todos, index }: Props) {
   //     state.searchString,
   //     state.setNewTaskType,
   //   ]);
-  //  const openModal = useModalStore((state) => state.openModal);
+
+  const { setNewTaskType } = useContext(TaskContext);
 
   const handleAddTodo = () => {
-    console.log("isLoged", isLogged);
+    setNewTaskType(id);
     return isLogged ? setShowAddTaskModal(true) : setIsModalOpen(true);
-    // setNewTaskType(id);
-    // openModal();
   };
 
   return (

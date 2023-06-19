@@ -1,8 +1,9 @@
 "use client";
+import { TaskContext } from "@/context/task-context";
 //import { useBoardStore } from "@/store/BoardStore";
 import { RadioGroup } from "@headlessui/react";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 const types = [
   {
@@ -26,7 +27,7 @@ const types = [
 ];
 
 function TaskTypeRadio() {
-  const [newTaskType, setNewTasktype] = useState("todo");
+  const { newTaskType, setNewTaskType } = useContext(TaskContext);
   //   const [newTaskType, setNewTasktype] = useBoardStore((state) => [
   //     state.newTaskType,
   //     state.setNewTaskType,
@@ -38,7 +39,7 @@ function TaskTypeRadio() {
         <RadioGroup
           value={newTaskType}
           onChange={(e) => {
-            setNewTasktype(e);
+            setNewTaskType(e);
           }}
         >
           <div className="space-y-2">
