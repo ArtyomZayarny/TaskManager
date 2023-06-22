@@ -19,6 +19,13 @@ export const TaskContextProvider = ({ children }: Props) => {
       newTaskType,
       image
     );
+    // new task dto
+    /* 
+    title
+    status
+    image
+
+    */
   };
 
   //   const setNewTaskTypehandler = (status) => {
