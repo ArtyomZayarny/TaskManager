@@ -1,13 +1,21 @@
 //import { databases } from "@/appwrite";
 
+import { GET_ALL_TASK } from "@/requests";
 import { Board, Column, TypedColumn } from "@/types";
 
 export const getTodosGroupedByColumn = async () => {
-  // const data = await databases.listDocuments(
-  //   process.env.NEXT_PUBLIC_DATABASE_ID!,
-  //   process.env.NEXT_PUBLIC_TODOS_COLLECTION_ID!
-  // );
-  const todos = [];
+ const userId = JSON.parse(localStorage.getItem('userId'));
+
+  const requestTasks = await fetch(`${GET_ALL_TASK}/${userId}`,{
+    method:'GET',
+   // body:JSON.stringify(task),
+    mode:'cors',
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+  const todos = await requestTasks.json();
+
   const columns = todos.reduce((acc, todo) => {
     if (!acc.get(todo.status)) {
       acc.set(todo.status, {

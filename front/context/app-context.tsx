@@ -81,6 +81,7 @@ export const AppContextProvider = ({ children }: Props) => {
     setModalType,
     getBoard,
     board,
+    setBoard,
     showAddTaskModal,
     setShowAddTaskModal,
   } as unknown as AppContextType;

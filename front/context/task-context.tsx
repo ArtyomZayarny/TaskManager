@@ -10,15 +10,17 @@ type Props = {
 };
 
 export const TaskContextProvider = ({ children }: Props) => {
-  const {board} = useContext(AppContext)
+  const {board, setBoard, setIsModalOpen} = useContext(AppContext)
   const [newTaskInput, setNewTaskInput] = useState("");
   const [newTaskType, setNewTaskType] = useState("todo");
   const [image, setImage] = useState(null);
+  const userId = JSON.parse(localStorage.getItem('userId'));
 
   const addTask = async (newTaskInput, newTaskType, image) => {
     const task = {
       title:newTaskInput,
       status: newTaskType,
+      userId,
       image
     }
 
@@ -50,7 +52,7 @@ export const TaskContextProvider = ({ children }: Props) => {
         columns: newColumns,
       }
 
-      return updatedBoard;
+      return await setBoard(updatedBoard);
   };
 
 

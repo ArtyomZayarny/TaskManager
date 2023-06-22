@@ -48,8 +48,8 @@ export default function AddTaskModal() {
     if (!newTaskInput) return;
     //add task
 
-    const newBoard = await addTask(newTaskInput, newTaskType, image)
-    console.log('newboard',newBoard )
+    await addTask(newTaskInput, newTaskType, image)
+    setShowAddTaskModal(false)
 
     // setImage(null);
     // closeModal();
