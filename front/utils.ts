@@ -1,5 +1,5 @@
-export const setAccessTokenToLS = (access_token: string) => {
-  localStorage.setItem("access_token", JSON.stringify(access_token));
+export const storeToLS = (key:string, value: string) => {
+  localStorage.setItem(key, JSON.stringify(value));
 };
 
 export const AuthRequest = async (requestString: string, creads) => {

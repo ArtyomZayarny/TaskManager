@@ -5,7 +5,7 @@ import { Dialog } from "@headlessui/react";
 import React, { useContext, useState } from "react";
 import { Button } from "./Button";
 import { REQUEST_LOGIN, REQUEST_REGISTER } from "@/requests";
-import { AuthRequest, setAccessTokenToLS } from "@/utils";
+import { AuthRequest, setAccessTokenToLS, storeToLS } from "@/utils";
 import { Input } from "./Input";
 import { ErrorMessage } from "./Error";
 import { Congrats } from "./Congrats";
@@ -68,9 +68,10 @@ export const Modal = () => {
   const login = async (creads: UserCreads) => {
     try {
       const response = await AuthRequest(REQUEST_LOGIN, creads);
-
+      const {access_token, userId} = response;
       if (!response.error && !localStorage.getItem("access_token")) {
-        setAccessTokenToLS(response?.access_token);
+        storeToLS("access_token",access_token);
+        storeToLS('userId',userId)
         afterLogin();
       }
 
@@ -83,9 +84,10 @@ export const Modal = () => {
   const register = async (creads: UserCreads) => {
     try {
       const response = await AuthRequest(REQUEST_REGISTER, creads);
-
+      const {access_token, userId} = response;
       if (!response.error && !localStorage.getItem("access_token")) {
-        setAccessTokenToLS(response?.access_token);
+        storeToLS('access_token', access_token);
+        storeToLS('userId',userId)
         afterRegister();
       }
 
