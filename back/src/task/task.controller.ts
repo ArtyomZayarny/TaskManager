@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { TaskDto } from './dto/task.dto';
 import { TaskService } from './task.service';
+import { Types } from 'mongoose';
 
 @Controller('task')
 export class TaskController {
@@ -10,6 +11,11 @@ export class TaskController {
     @Post('create')
     async createTask(@Body() task:TaskDto) {
         return this.taskService.create(task)
+    }
+
+    @Get(':id')
+    async fetchTaskListByUserId(@Param('id') id:string) {
+        return this.taskService.getTasksByUserId(id)
     }
 
     // @Delete(':id')
