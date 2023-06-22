@@ -1,5 +1,7 @@
 "use client";
-import React, { createContext, useState } from "react";
+import { CREATE_TASK } from "@/requests";
+import React, { createContext, useContext, useState } from "react";
+import { AppContext } from "./app-context";
 
 export const TaskContext = createContext({});
 
@@ -8,29 +10,49 @@ type Props = {
 };
 
 export const TaskContextProvider = ({ children }: Props) => {
+  const {board} = useContext(AppContext)
   const [newTaskInput, setNewTaskInput] = useState("");
   const [newTaskType, setNewTaskType] = useState("todo");
   const [image, setImage] = useState(null);
 
-  const addTask = (newTaskInput, newTaskType, image) => {
-    console.log(
-      "newTaskInput, newTaskType, image",
-      newTaskInput,
-      newTaskType,
+  const addTask = async (newTaskInput, newTaskType, image) => {
+    const task = {
+      title:newTaskInput,
+      status: newTaskType,
       image
-    );
-    // new task dto
-    /* 
-    title
-    status
-    image
+    }
 
-    */
+    const request = await fetch(CREATE_TASK,{
+      method:'POST',
+      body:JSON.stringify(task),
+      mode:'cors',
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+
+    const newTask = await request.json()
+
+  
+    const newColumns = new Map(board.columns);
+
+    const column = newColumns.get(newTaskType);
+
+    if (!column) {
+      newColumns.set(newTaskType, {
+        id: newTaskType,
+        todos: [newTask],
+      });
+    } else {
+      newColumns.get(newTaskType)?.todos.push(newTask);
+    }
+    const updatedBoard = {
+        columns: newColumns,
+      }
+
+      return updatedBoard;
   };
 
-  //   const setNewTaskTypehandler = (status) => {
-  //     console.log("status", status);
-  //   };
 
   const value = {
     addTask,

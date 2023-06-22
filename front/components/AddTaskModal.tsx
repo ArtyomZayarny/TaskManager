@@ -43,11 +43,13 @@ export default function AddTaskModal() {
   //   state.setImage,
   // ]);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newTaskInput) return;
     //add task
-    addTask(newTaskInput, newTaskType, image);
+
+    const newBoard = await addTask(newTaskInput, newTaskType, image)
+    console.log('newboard',newBoard )
 
     // setImage(null);
     // closeModal();

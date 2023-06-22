@@ -18,6 +18,8 @@ type AppContextType = {
   modalType: string;
   setModalType: (v: string) => void;
   getBoard: (board: Board) => Board;
+  board:Board;
+  setBoard: (v:Board)=>Board;
   showAddTaskModal: boolean;
   setShowAddTaskModal: (v: boolean) => void;
 };
@@ -54,7 +56,7 @@ export const AppContextProvider = ({ children }: Props) => {
   }, []);
 
   const logOut = async () => {
-    await localStorage.removeItem("access_token");
+    await localStorage.clear();
     await setIsLoged(false);
   };
 
