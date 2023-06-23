@@ -6,6 +6,8 @@ import { Board, Column, TypedColumn } from "@/types";
 export const getTodosGroupedByColumn = async () => {
  const userId = JSON.parse(localStorage.getItem('userId'));
 
+ let todos = [];
+ if(userId) {
   const requestTasks = await fetch(`${GET_ALL_TASK}/${userId}`,{
     method:'GET',
    // body:JSON.stringify(task),
@@ -14,7 +16,9 @@ export const getTodosGroupedByColumn = async () => {
       "Content-Type": "application/json",
     }
   });
-  const todos = await requestTasks.json();
+  todos = await requestTasks.json();
+ }
+
 
   const columns = todos.reduce((acc, todo) => {
     if (!acc.get(todo.status)) {

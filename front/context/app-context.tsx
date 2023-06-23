@@ -58,6 +58,7 @@ export const AppContextProvider = ({ children }: Props) => {
   const logOut = async () => {
     await localStorage.clear();
     await setIsLoged(false);
+    getBoard()
   };
 
   const getBoard = async () => {

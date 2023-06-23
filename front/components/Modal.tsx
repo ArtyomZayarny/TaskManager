@@ -10,6 +10,8 @@ import { Input } from "./Input";
 import { ErrorMessage } from "./Error";
 import { Congrats } from "./Congrats";
 import { AuthResponse, UserCreads } from "@/types";
+import { TaskContext } from "@/context/task-context";
+import { getTodosGroupedByColumn } from "@/lib/getTodosGroupedByColumn";
 
 export const Modal = () => {
   const {
@@ -21,6 +23,7 @@ export const Modal = () => {
     error,
     modalType,
     setModalType,
+    getBoard
   } = useContext(AppContext);
 
   const [email, setEmail] = useState("");
@@ -47,11 +50,12 @@ export const Modal = () => {
     setPassword("");
   };
 
-  const afterLogin = () => {
+  const afterLogin = async () => {
     setIsModalOpen(false);
     setIsLoged(true);
     setIsLoading(false);
     clearForm();
+    getBoard( await getTodosGroupedByColumn());
   };
 
   const afterRegister = () => {
