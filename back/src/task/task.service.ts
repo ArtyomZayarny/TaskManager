@@ -21,4 +21,8 @@ export class TaskService {
         .find({ userId: id })
         .exec();
     }
+
+    async deleteTask(id) {
+        return this.taskModel.findByIdAndDelete(id).exec()
+    }
 }
