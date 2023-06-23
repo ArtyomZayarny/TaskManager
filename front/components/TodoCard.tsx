@@ -1,11 +1,11 @@
 "use client";
 
+import { TaskContext } from "@/context/task-context";
 import { getUrl } from "@/lib/getUrl";
 import { Todo, TypedColumn } from "@/types";
-//import { useBoardStore } from "@/store/BoardStore";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   DraggableProvidedDragHandleProps,
   DraggableProvidedDraggableProps,
@@ -28,7 +28,7 @@ function TodoCard({
   dragHandleProps,
   draggableProps,
 }: Props) {
-  // const deleteTask = useBoardStore((state) => state.deleteTask);
+  const {deleteTask} = useContext(TaskContext)
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ function TodoCard({
         <p>{todo.title}</p>
         <button
           className="text-red-500 hover:text-red-600"
-          // onClick={() => deleteTask(index, todo, id)}
+           onClick={() => deleteTask(index, todo, id)}
         >
           <XCircleIcon className="ml-5 h-8 w-8" />
         </button>

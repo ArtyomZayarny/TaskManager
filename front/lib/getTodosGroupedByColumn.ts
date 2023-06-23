@@ -1,6 +1,6 @@
 //import { databases } from "@/appwrite";
 
-import { GET_ALL_TASK } from "@/requests";
+import { REQUEST_TASK } from "@/requests";
 import { Board, Column, TypedColumn } from "@/types";
 
 export const getTodosGroupedByColumn = async () => {
@@ -8,9 +8,8 @@ export const getTodosGroupedByColumn = async () => {
 
  let todos = [];
  if(userId) {
-  const requestTasks = await fetch(`${GET_ALL_TASK}/${userId}`,{
+  const requestTasks = await fetch(`${REQUEST_TASK}/${userId}`,{
     method:'GET',
-   // body:JSON.stringify(task),
     mode:'cors',
     headers: {
       "Content-Type": "application/json",
@@ -28,8 +27,8 @@ export const getTodosGroupedByColumn = async () => {
       });
     }
     acc.get(todo.status)!.todos.push({
-      $id: todo.$id,
-      $createdAt: todo.$createdAt,
+      id: todo._id,
+      createdAt: todo.createdAt,
       title: todo.title,
       status: todo.status,
       ...(todo.image && { image: JSON.parse(todo.image) }),

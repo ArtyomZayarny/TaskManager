@@ -1,5 +1,5 @@
 "use client";
-import { CREATE_TASK } from "@/requests";
+import { CREATE_TASK, REQUEST_TASK } from "@/requests";
 import React, { createContext, useContext, useState } from "react";
 import { AppContext } from "./app-context";
 
@@ -55,6 +55,26 @@ export const TaskContextProvider = ({ children }: Props) => {
       return await setBoard(updatedBoard);
   };
 
+  const deleteTask = async (taskIndex: number, todo: Todo, id: TypedColumn) => {
+    const newColumns = new Map(board.columns);
+
+    newColumns.get(id)?.todos.splice(taskIndex, 1);
+    setBoard({columns:newColumns})
+
+    // if (todo.image) {
+    //   await storage.deleteFile(todo.image.bucketId, todo.image.fileId);
+    // }
+
+    await fetch(`${REQUEST_TASK}/${todo.id}`,{
+    method:"DELETE",
+    mode:'cors',
+    headers: {
+      "Content-Type": "application/json",
+    }
+    });
+  
+  }
+
 
   const value = {
     addTask,
@@ -63,6 +83,7 @@ export const TaskContextProvider = ({ children }: Props) => {
     newTaskType,
     setNewTaskType,
     // setNewTaskTypehandler,
+    deleteTask,
     image,
     setImage,
   };
