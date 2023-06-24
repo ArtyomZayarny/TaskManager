@@ -1,0 +1,4 @@
+/back/node_modules
+.DS_Store
+/back/dist
+/front/node_modules
