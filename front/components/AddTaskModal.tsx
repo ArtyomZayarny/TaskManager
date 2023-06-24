@@ -50,6 +50,8 @@ export default function AddTaskModal() {
 
     await addTask(newTaskInput, newTaskType, image)
     setShowAddTaskModal(false)
+    setNewTaskInput('')
+    
 
     // setImage(null);
     // closeModal();
