@@ -24,12 +24,14 @@ export const TaskContextProvider = ({ children }: Props) => {
       image
     }
 
+    const token = JSON.parse(localStorage.getItem('access_token'));
     const request = await fetch(CREATE_TASK,{
       method:'POST',
       body:JSON.stringify(task),
       mode:'cors',
       headers: {
         "Content-Type": "application/json",
+        "Authorization" : `Bearer ${token}`
       }
     })
 
@@ -65,11 +67,14 @@ export const TaskContextProvider = ({ children }: Props) => {
     //   await storage.deleteFile(todo.image.bucketId, todo.image.fileId);
     // }
 
+    const token = JSON.parse(localStorage.getItem('access_token'));
+
     await fetch(`${REQUEST_TASK}/${todo.id}`,{
     method:"DELETE",
     mode:'cors',
     headers: {
       "Content-Type": "application/json",
+      "Authorization" : `Bearer ${token}`
     }
     });
   
