@@ -5,17 +5,22 @@ import { Board, Column, TypedColumn } from "@/types";
 
 export const getTodosGroupedByColumn = async () => {
  const userId = JSON.parse(localStorage.getItem('userId'));
+ const token = JSON.parse(localStorage.getItem('access_token'));
 
  let todos = [];
+
  if(userId) {
   const requestTasks = await fetch(`${REQUEST_TASK}/${userId}`,{
     method:'GET',
     mode:'cors',
     headers: {
       "Content-Type": "application/json",
+      "Authorization" : `Bearer ${token}`
     }
   });
+
   todos = await requestTasks.json();
+  
  }
 
 
