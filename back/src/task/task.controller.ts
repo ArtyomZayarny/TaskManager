@@ -15,7 +15,7 @@ export class TaskController {
         return this.taskService.create(task)
     }
 
-    //@UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Get(':id')
     async fetchTaskListByUserId(@Param('id') id:string) {
         return this.taskService.getTasksByUserId(id)
