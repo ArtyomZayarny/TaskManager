@@ -28,20 +28,6 @@ export default function AddTaskModal() {
     newTaskType,
   } = useContext(TaskContext);
 
-  //   const [isOpen, closeModal] = useModalStore((state) => [
-  //     state.isOpen,
-  //     state.closeModal,
-  //   ]);
-
-  //const [addTask, newTaskInput, setNewTaskInput, newTaskType, image, setImage] =
-  // useBoardStore((state) => [
-  //   state.addTask,
-  //   state.newTaskInput,
-  //   state.setNewTaskInput,
-  //   state.newTaskType,
-  //   state.image,
-  //   state.setImage,
-  // ]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -52,15 +38,13 @@ export default function AddTaskModal() {
     setShowAddTaskModal(false)
     setNewTaskInput('')
     
-
-    // setImage(null);
-    // closeModal();
   };
 
   return (
     <Transition appear show={showAddTaskModal} as={Fragment}>
       <Dialog
         as="form"
+        encType='multipart/form-data'
         onSubmit={handleSubmit}
         onClose={() => setShowAddTaskModal(false)}
         className="relative z-10"

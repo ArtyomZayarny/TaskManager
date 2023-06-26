@@ -2,6 +2,8 @@
 import { CREATE_TASK, REQUEST_TASK } from "@/requests";
 import React, { createContext, useContext, useState } from "react";
 import { AppContext } from "./app-context";
+import { uploadImage } from "@/lib/uploadImage";
+import { storage } from "@/appwrite";
 
 export const TaskContext = createContext({});
 
@@ -17,18 +19,32 @@ export const TaskContextProvider = ({ children }: Props) => {
   const userId = JSON.parse(localStorage.getItem('userId'));
 
   const addTask = async (newTaskInput, newTaskType, image) => {
+    let file = null;
     const task = {
       title:newTaskInput,
       status: newTaskType,
       userId,
       image
     }
+    if (!image) {
+      return
+    }
+    try{
+    const fileUploaded = await uploadImage(image);
 
-    const token = JSON.parse(localStorage.getItem('access_token'));
+    if (fileUploaded) {
+      file = {
+        bucketId: fileUploaded.bucketId,
+        fileId: fileUploaded.$id,
+      };
+    }
+      task.image = file;
+
+       const token = JSON.parse(localStorage.getItem('access_token'));
+
     const request = await fetch(CREATE_TASK,{
       method:'POST',
       body:JSON.stringify(task),
-      mode:'cors',
       headers: {
         "Content-Type": "application/json",
         "Authorization" : `Bearer ${token}`
@@ -37,7 +53,6 @@ export const TaskContextProvider = ({ children }: Props) => {
 
     const newTask = await request.json()
 
-  
     const newColumns = new Map(board.columns);
 
     const column = newColumns.get(newTaskType);
@@ -55,6 +70,10 @@ export const TaskContextProvider = ({ children }: Props) => {
       }
 
       return await setBoard(updatedBoard);
+   
+    }catch(e) {
+      console.log('Error: ', e)
+    }
   };
 
   const deleteTask = async (taskIndex: number, todo: Todo, id: TypedColumn) => {
@@ -63,9 +82,9 @@ export const TaskContextProvider = ({ children }: Props) => {
     newColumns.get(id)?.todos.splice(taskIndex, 1);
     setBoard({columns:newColumns})
 
-    // if (todo.image) {
-    //   await storage.deleteFile(todo.image.bucketId, todo.image.fileId);
-    // }
+    if (todo.image) {
+      await storage.deleteFile(todo.image.bucketId, todo.image.fileId);
+    }
 
     const token = JSON.parse(localStorage.getItem('access_token'));
 

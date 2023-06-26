@@ -9,8 +9,7 @@ export class TaskDto {
     status:string;
 
 
-    @IsString()
-    image:string
+    image?: { bucketId:string,fileId:string}
 
 
     @IsString()
