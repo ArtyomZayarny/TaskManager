@@ -3,6 +3,7 @@ import { CREATE_TASK, REQUEST_TASK } from "@/requests";
 import React, { createContext, useContext, useState } from "react";
 import { AppContext } from "./app-context";
 import { uploadImage } from "@/lib/uploadImage";
+import { storage } from "@/appwrite";
 
 export const TaskContext = createContext({});
 
@@ -81,9 +82,9 @@ export const TaskContextProvider = ({ children }: Props) => {
     newColumns.get(id)?.todos.splice(taskIndex, 1);
     setBoard({columns:newColumns})
 
-    // if (todo.image) {
-    //   await storage.deleteFile(todo.image.bucketId, todo.image.fileId);
-    // }
+    if (todo.image) {
+      await storage.deleteFile(todo.image.bucketId, todo.image.fileId);
+    }
 
     const token = JSON.parse(localStorage.getItem('access_token'));
 
