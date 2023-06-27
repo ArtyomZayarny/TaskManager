@@ -4,9 +4,21 @@ import React, { createContext, useContext, useState } from "react";
 import { AppContext } from "./app-context";
 import { uploadImage } from "@/lib/uploadImage";
 import { storage } from "@/appwrite";
-import { Todo } from "@/types";
+import { Todo, TypedColumn } from "@/types";
 
-export const TaskContext = createContext({});
+type TaskContextType = {
+  newTaskInput:string;
+   setNewTaskInput:(v:string) =>void;
+  newTaskType:TypedColumn;
+   setNewTaskType:(v:TypedColumn)=>void;
+  image:File | null;
+  setImage: (f:File | null) =>void;
+  addTask: (title:string, status:TypedColumn, image:File | null) => Todo
+}
+
+
+
+export const TaskContext = createContext({}as unknown as TaskContextType);
 
 type Props = {
   children: React.ReactNode;
@@ -93,7 +105,6 @@ export const TaskContextProvider = ({ children }: Props) => {
     setNewTaskInput,
     newTaskType,
     setNewTaskType,
-    // setNewTaskTypehandler,
     deleteTask,
     image,
     setImage,
