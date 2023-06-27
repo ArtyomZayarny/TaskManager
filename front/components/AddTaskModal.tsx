@@ -57,6 +57,7 @@ export default function AddTaskModal() {
 
     setShowAddTaskModal(false)
     setNewTaskInput('')
+    setImage(null)
     
   };
 

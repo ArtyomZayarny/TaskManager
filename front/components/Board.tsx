@@ -1,6 +1,5 @@
 "use client";
 
-//import { useBoardStore } from "@/store/BoardStore";
 import React, { useContext, useEffect } from "react";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import Column from "./Column";
@@ -79,9 +78,6 @@ export default function Board() {
         id: finishCol.id,
         todos: finishTodos,
       });
-
-      console.log('todoMoved',todoMoved)
-      console.log('finishCol.id', finishCol.id)
 
       //Update  board  store in Db
       await updateTodoInDB(todoMoved.id, finishCol.id);
