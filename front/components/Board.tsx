@@ -5,11 +5,14 @@ import React, { useContext, useEffect } from "react";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import Column from "./Column";
 import { AppContext } from "@/context/app-context";
+import { TaskContext } from "@/context/task-context";
 
 export default function Board() {
-  const { board } = useContext(AppContext);
-  
-  const handleOnDrugEnd = (result: DropResult) => {
+  const { board,setBoard } = useContext(AppContext);
+  const {updateTodoInDB} = useContext(TaskContext)
+
+
+  const handleOnDrugEnd = async (result: DropResult) => {
     const { destination, source, type } = result;
 
     if (!destination) return;
@@ -20,7 +23,7 @@ export default function Board() {
       const [removed] = entries.splice(source.index, 1);
       entries.splice(destination.index, 0, removed);
       const rerrangedColumns = new Map(entries);
-      //  setBoardState({ ...board, columns: rerrangedColumns });
+      setBoard({columns: rerrangedColumns });
     }
 
     //This step is needed as the indexed are stored as numbers 0, 1,2 etc. Insted of the id's with DND library
@@ -57,7 +60,7 @@ export default function Board() {
       const newColumns = new Map(board.columns);
       newColumns.set(startCol.id, newCol);
 
-      // setBoardState({ ...board, columns: newColumns });
+      setBoard({ columns: newColumns });
     } else {
       //dragging to another column
 
@@ -77,10 +80,12 @@ export default function Board() {
         todos: finishTodos,
       });
 
-      //Update  board  store in Db
-      //  updateTodoInDB(todoMoved, finishCol.id);
+      console.log('todoMoved',todoMoved)
+      console.log('finishCol.id', finishCol.id)
 
-      // setBoardState({ ...board, columns: newColumns });
+      //Update  board  store in Db
+      await updateTodoInDB(todoMoved.id, finishCol.id);
+      setBoard({ columns: newColumns });
     }
   };
 
