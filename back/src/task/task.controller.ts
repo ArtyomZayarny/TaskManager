@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param,  Patch,  Post, UseGuards, } from '@nestjs/common';
 import { TaskDto } from './dto/task.dto';
 import { TaskService } from './task.service';
 import { TASK_NOT_FOUND } from './constants';
@@ -11,8 +11,8 @@ export class TaskController {
 
    @UseGuards(JwtAuthGuard)
     @Post('create')
-    async createTask(@Body() task:TaskDto) {
-        return this.taskService.create(task)
+    async createTasktask(@Body() task:TaskDto) {
+       return this.taskService.create(task)
     }
 
     @UseGuards(JwtAuthGuard)
@@ -30,8 +30,14 @@ export class TaskController {
         }
     }
 
-    // @Patch(':id')
-    // async updateTask(@Param('id') id:string, @Body() dto:TaskDto){
+    @Patch(':id')
+    async updateTask(@Param('id') id:string, @Body() task:TaskDto){
+        const updatedProduct = await this.taskService.updateById(id, task);
 
-    // }
+        if (!updatedProduct) {
+          throw new NotFoundException(TASK_NOT_FOUND);
+        }
+    
+        return updatedProduct;
+    }
 }

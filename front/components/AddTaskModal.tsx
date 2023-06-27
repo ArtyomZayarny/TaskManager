@@ -1,24 +1,22 @@
 "use client";
 
-// import { useBoardStore } from "@/store/BoardStore";
-// import { useModalStore } from "@/store/ModalStore";
 import { Dialog, Transition } from "@headlessui/react";
 import React, {
   FormEvent,
   Fragment,
   useContext,
   useRef,
-  useState,
 } from "react";
 import TaskTypeRadio from "./TaskTypeRadio";
 import Image from "next/image";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { AppContext } from "@/context/app-context";
 import { TaskContext } from "@/context/task-context";
+import { Board, Todo, TypedColumn } from "@/types";
 
 export default function AddTaskModal() {
   const imagePickerRef = useRef<HTMLInputElement>(null);
-  const { showAddTaskModal, setShowAddTaskModal } = useContext(AppContext);
+  const { showAddTaskModal, setShowAddTaskModal,setBoard, board } = useContext(AppContext);
   const {
     newTaskInput,
     setNewTaskInput,
@@ -28,39 +26,46 @@ export default function AddTaskModal() {
     newTaskType,
   } = useContext(TaskContext);
 
-  //   const [isOpen, closeModal] = useModalStore((state) => [
-  //     state.isOpen,
-  //     state.closeModal,
-  //   ]);
 
-  //const [addTask, newTaskInput, setNewTaskInput, newTaskType, image, setImage] =
-  // useBoardStore((state) => [
-  //   state.addTask,
-  //   state.newTaskInput,
-  //   state.setNewTaskInput,
-  //   state.newTaskType,
-  //   state.image,
-  //   state.setImage,
-  // ]);
+  const updateBoard = async(board:Board,status:TypedColumn,newTask:Todo) =>{
+    const newColumns = new Map(board.columns);
+
+    const column = newColumns.get(status);
+
+    if (!column) {
+      newColumns.set(status, {
+        id: status,
+        todos: [newTask],
+      });
+    } else {
+      newColumns.get(status)?.todos.push(newTask);
+    }
+    const updatedBoard = {
+        columns: newColumns,
+      }
+      return await setBoard(updatedBoard);
+  }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newTaskInput) return;
     //add task
+    const savedTask = await addTask(newTaskInput, newTaskType, image)
 
-    await addTask(newTaskInput, newTaskType, image)
+    //Update board
+    await updateBoard(board,newTaskType,savedTask);
+
     setShowAddTaskModal(false)
     setNewTaskInput('')
+    setImage(null)
     
-
-    // setImage(null);
-    // closeModal();
   };
 
   return (
     <Transition appear show={showAddTaskModal} as={Fragment}>
       <Dialog
         as="form"
+        encType='multipart/form-data'
         onSubmit={handleSubmit}
         onClose={() => setShowAddTaskModal(false)}
         className="relative z-10"

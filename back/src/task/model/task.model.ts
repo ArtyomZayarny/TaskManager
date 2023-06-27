@@ -13,7 +13,8 @@ export class TaskModel extends TimeStamps {
     status:string;
 
     @prop()
-    iamge:string;
+    image?: { bucketId:string,fileId:string}
+    
 
 
     @prop()

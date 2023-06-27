@@ -1,6 +1,6 @@
 "use client";
+
 import { TaskContext } from "@/context/task-context";
-//import { useBoardStore } from "@/store/BoardStore";
 import { RadioGroup } from "@headlessui/react";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import React, { useContext, useState } from "react";
@@ -28,10 +28,6 @@ const types = [
 
 function TaskTypeRadio() {
   const { newTaskType, setNewTaskType } = useContext(TaskContext);
-  //   const [newTaskType, setNewTasktype] = useBoardStore((state) => [
-  //     state.newTaskType,
-  //     state.setNewTaskType,
-  //   ]);
 
   return (
     <div className="w-full py-5">

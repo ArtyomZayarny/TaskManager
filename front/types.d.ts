@@ -25,8 +25,8 @@ interface Image {
 }
 
 interface Todo {
-  $id: string;
-  $createdAt: string;
+  id: string;
+  createdAt: string;
   title: string;
   status: string;
   image?: Image;

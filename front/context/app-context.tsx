@@ -22,6 +22,7 @@ type AppContextType = {
   setBoard: (v:Board)=>Board;
   showAddTaskModal: boolean;
   setShowAddTaskModal: (v: boolean) => void;
+  logOut:()=>void
 };
 
 export const AppContext = createContext({} as AppContextType);
@@ -86,5 +87,6 @@ export const AppContextProvider = ({ children }: Props) => {
     showAddTaskModal,
     setShowAddTaskModal,
   } as unknown as AppContextType;
+
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
