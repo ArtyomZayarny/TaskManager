@@ -15,6 +15,7 @@ type TaskContextType = {
   setImage: (f:File | null) =>void;
   addTask: (title:string, status:TypedColumn, image:File | null) => Todo
   deleteTask:(index:number,todo:Todo,id:TypedColumn) =>void
+  updateTodoInDB: (id:string, status:TypedColumn)=>void
 }
 
 
@@ -103,6 +104,26 @@ export const TaskContextProvider = ({ children }: Props) => {
     });
   };
 
+  const updateTodoInDB = async (id, status) => {
+
+
+    const token = JSON.parse(localStorage.getItem("access_token")!);
+
+
+    const request = await fetch(`${REQUEST_TASK}/${id}`, {
+      method: "PATCH",
+      mode: "cors",
+      body: JSON.stringify({status}),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const res = await request.json();
+    console.log('res', res)
+  }
+
   const value = {
     addTask,
     newTaskInput,
@@ -112,6 +133,7 @@ export const TaskContextProvider = ({ children }: Props) => {
     deleteTask,
     image,
     setImage,
+    updateTodoInDB
   } as unknown as TaskContextType;
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
