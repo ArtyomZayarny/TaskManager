@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState } from "react";
 import { AppContext } from "./app-context";
 import { uploadImage } from "@/lib/uploadImage";
 import { storage } from "@/appwrite";
-import { Todo, TypedColumn } from "@/types";
+import { Image, Todo, TypedColumn } from "@/types";
 
 type TaskContextType = {
   newTaskInput:string;
@@ -14,6 +14,7 @@ type TaskContextType = {
   image:File | null;
   setImage: (f:File | null) =>void;
   addTask: (title:string, status:TypedColumn, image:File | null) => Todo
+  deleteTask:(index:number,todo:Todo,id:TypedColumn) =>void
 }
 
 
@@ -29,34 +30,37 @@ export const TaskContextProvider = ({ children }: Props) => {
   const [newTaskInput, setNewTaskInput] = useState("");
   const [newTaskType, setNewTaskType] = useState("todo");
   const [image, setImage] = useState(null);
-  const userId = JSON.parse(localStorage.getItem("userId"));
+  const userId = JSON.parse(localStorage.getItem("userId")!);
 
-  const addTask = async (newTaskInput, newTaskType, image) => {
+  const addTask = async (title:string, status:string, image?:File | null) => {
     let file = null;
 
     //create task object
     const task = {
-      title: newTaskInput,
-      status: newTaskType,
+      title,
+      status,
       userId,
       image,
-    };
+    } as unknown as Todo;
 
     //Upload image to appwrite
-    try {
-      const fileUploaded = await uploadImage(image);
-      if (fileUploaded) {
-        file = {
-          bucketId: fileUploaded.bucketId,
-          fileId: fileUploaded.$id,
-        };
-        task.image = file;
+    if(image) {
+      try {
+        const fileUploaded = await uploadImage(image);
+        if (fileUploaded) {
+          file = {
+            bucketId: fileUploaded.bucketId,
+            fileId: fileUploaded.$id,
+          } as unknown as Image ;
+          task.image = file;
+        }
+      } catch (e) {
+        console.log("Upload image error: ", e);
       }
-    } catch (e) {
-      console.log("Upload image error: ", e);
     }
 
-    const token = JSON.parse(localStorage.getItem("access_token"));
+
+    const token = JSON.parse(localStorage.getItem("access_token")!);
 
     // Add task request
     let newTask = {} as Todo;
@@ -87,7 +91,7 @@ export const TaskContextProvider = ({ children }: Props) => {
       await storage.deleteFile(todo.image.bucketId, todo.image.fileId);
     }
 
-    const token = JSON.parse(localStorage.getItem("access_token"));
+    const token = JSON.parse(localStorage.getItem("access_token")!);
 
     await fetch(`${REQUEST_TASK}/${todo.id}`, {
       method: "DELETE",
@@ -108,6 +112,7 @@ export const TaskContextProvider = ({ children }: Props) => {
     deleteTask,
     image,
     setImage,
-  };
+  } as unknown as TaskContextType;
+
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
 };

@@ -5,8 +5,6 @@ import TodoCard from "./TodoCard";
 import { Todo, TypedColumn } from "@/types";
 import { AppContext } from "@/context/app-context";
 import { TaskContext } from "@/context/task-context";
-//import { useBoardStore } from "@/store/BoardStore";
-//import { useModalStore } from "@/store/ModalStore";
 
 type Props = {
   id: TypedColumn;
@@ -29,10 +27,6 @@ function Column({ id, todos, index }: Props) {
     showAddTaskModal,
     setShowAddTaskModal,
   } = useContext(AppContext);
-  //   const [searchString, setNewTaskType] = useBoardStore((state) => [
-  //     state.searchString,
-  //     state.setNewTaskType,
-  //   ]);
 
   const { setNewTaskType } = useContext(TaskContext);
 
@@ -81,8 +75,8 @@ function Column({ id, todos, index }: Props) {
                       return null;
                     return (
                       <Draggable
-                        key={todo.$id}
-                        draggableId={todo.$id}
+                        key={todo.id}
+                        draggableId={todo.id}
                         index={index}
                       >
                         {(provided) => (

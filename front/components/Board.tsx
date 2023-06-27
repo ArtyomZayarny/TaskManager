@@ -8,19 +8,7 @@ import { AppContext } from "@/context/app-context";
 
 export default function Board() {
   const { board } = useContext(AppContext);
-  //   const [getBoard, board, setBoardState, updateTodoInDB] = useBoardStore(
-  //     (state) => [
-  //       state.getBoard,
-  //       state.board,
-  //       state.setBoardState,
-  //       state.updateTodoInDB,
-  //     ]
-  //   );
-
-  // useEffect(() => {
-  //   getBoard();
-  // }, [getBoard]);
-
+  
   const handleOnDrugEnd = (result: DropResult) => {
     const { destination, source, type } = result;
 
