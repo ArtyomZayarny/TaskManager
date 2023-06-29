@@ -1,4 +1,4 @@
-#Trello clone Full stack project<br>
+# Trello clone Full stack project<br>
 
 To add new task you need to log in<br>
 As a loged user you can:<br>
@@ -7,13 +7,13 @@ As a loged user you can:<br>
  >3.Add images for your task<br>
  >4.Easily change your task status by drag and drop feature<br>
 
-#Technologies<br>
+# Technologies<br>
 
 #Frontend<br>
 >Next.js<br>
  >Appwrite<br>
 
-#Backend<br>
+# Backend<br>
   >Nest.js<br>
   >MongoDb<br>
  
