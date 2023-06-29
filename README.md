@@ -10,10 +10,10 @@ As a loged user you can:<br>
 #Technologies<br>
 
 #Frontend<br>
- Next.js<br>
- Appwrite<br>
+>Next.js<br>
+ >Appwrite<br>
 
-#Backend
+#Backend<br>
   Nest.js<br>
   MongoDb<br>
  
