@@ -1,19 +1,19 @@
-# Trello clone Full stuck project
+# Trello clone Full stuck project<br>
 
-To add new task you need to log in
-As a loged user you can:
- 1.Create new task
- 2.Manage your task status
- 3.Add images for your task
- 3.Easily change your task status by drag and drop feature
+To add new task you need to log in<br>
+As a loged user you can:<br>
+ 1.Create new task<br>
+ 2.Manage your task status<br>
+ 3.Add images for your task<br>
+ 3.Easily change your task status by drag and drop feature<br>
 
-#Technologies
+#Technologies<br>
 
-#Frontend
-Next.js
-Appwrite
+#Frontend<br>
+ Next.js<br>
+ Appwrite<br>
 
 #Backend
- Nest.js
- MongoDb
+  Nest.js<br>
+  MongoDb<br>
  
