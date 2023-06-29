@@ -1,4 +1,4 @@
-# Trello clone Full stuck project<br>
+#Trello clone Full stack project<br>
 
 To add new task you need to log in<br>
 As a loged user you can:<br>
