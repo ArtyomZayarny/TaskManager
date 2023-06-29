@@ -7,8 +7,6 @@ As a loged user you can:<br>
  >3.Add images for your task<br>
  >4.Easily change your task status by drag and drop feature<br>
 
-## Technologies<br>
-
 ## Frontend<br>
 >Next.js<br>
  >Appwrite<br>
