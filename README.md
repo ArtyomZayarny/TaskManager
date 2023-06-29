@@ -1,7 +1,5 @@
 # Trello clone Full stack project<br>
 <img width="1434" alt="Screenshot 2023-06-29 at 08 38 56" src="https://github.com/ArtyomZayarny/TaskManager/assets/15728688/04c62f0a-51b2-4cf3-b8da-bcb4aedd42e2">
-<img width="1434" alt="Screenshot 2023-06-29 at 08 35 53" src="https://github.com/ArtyomZayarny/TaskManager/assets/15728688/670433ee-3c43-4968-b84b-bd9f99b404e7">
-
 
 To add new task you need to log in<br>
 As a loged user you can:<br>
