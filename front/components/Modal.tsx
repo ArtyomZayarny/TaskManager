@@ -12,6 +12,10 @@ import { Congrats } from "./Congrats";
 import { AuthResponse, UserCreads } from "@/types";
 import { TaskContext } from "@/context/task-context";
 import { getTodosGroupedByColumn } from "@/lib/getTodosGroupedByColumn";
+import {
+  createAppwriteSession,
+  createAppwriteAccount,
+} from "@/lib/appwriteAuth";
 
 export const Modal = () => {
   const {
@@ -23,7 +27,7 @@ export const Modal = () => {
     error,
     modalType,
     setModalType,
-    getBoard
+    getBoard,
   } = useContext(AppContext);
 
   const [email, setEmail] = useState("");
@@ -55,7 +59,7 @@ export const Modal = () => {
     setIsLoged(true);
     setIsLoading(false);
     clearForm();
-    getBoard( await getTodosGroupedByColumn());
+    getBoard(await getTodosGroupedByColumn());
   };
 
   const afterRegister = () => {
@@ -72,10 +76,21 @@ export const Modal = () => {
   const login = async (creads: UserCreads) => {
     try {
       const response = await AuthRequest(REQUEST_LOGIN, creads);
-      const {access_token, userId} = response;
+      const { access_token, userId } = response;
       if (!response.error && !localStorage.getItem("access_token")) {
-        storeToLS("access_token",access_token);
-        storeToLS('userId',userId)
+        storeToLS("access_token", access_token);
+        userId !== undefined && storeToLS("userId", userId);
+
+        // Создаем сессию в Appwrite
+        try {
+          await createAppwriteSession(creads.login, creads.password);
+          // Сохраняем данные для будущих сессий
+          storeToLS("userEmail", creads.login);
+          storeToLS("userPassword", creads.password);
+        } catch (appwriteError) {
+          console.error("Appwrite login error:", appwriteError);
+        }
+
         afterLogin();
       }
 
@@ -88,10 +103,21 @@ export const Modal = () => {
   const register = async (creads: UserCreads) => {
     try {
       const response = await AuthRequest(REQUEST_REGISTER, creads);
-      const {access_token, userId} = response;
+      const { access_token, userId } = response;
       if (!response.error && !localStorage.getItem("access_token")) {
-        storeToLS('access_token', access_token);
-        storeToLS('userId',userId)
+        storeToLS("access_token", access_token);
+        userId !== undefined && storeToLS("userId", userId);
+
+        // Создаем аккаунт в Appwrite
+        try {
+          await createAppwriteAccount(creads.login, creads.password);
+          // Сохраняем данные для будущих сессий
+          storeToLS("userEmail", creads.login);
+          storeToLS("userPassword", creads.password);
+        } catch (appwriteError) {
+          console.error("Appwrite registration error:", appwriteError);
+        }
+
         afterRegister();
       }
 

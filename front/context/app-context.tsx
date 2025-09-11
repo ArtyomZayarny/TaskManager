@@ -18,11 +18,11 @@ type AppContextType = {
   modalType: string;
   setModalType: (v: string) => void;
   getBoard: (board: Board) => Board;
-  board:Board;
-  setBoard: (v:Board)=>Board;
+  board: Board;
+  setBoard: (v: Board) => Board;
   showAddTaskModal: boolean;
   setShowAddTaskModal: (v: boolean) => void;
-  logOut:()=>void
+  logOut: () => void;
 };
 
 export const AppContext = createContext({} as AppContextType);
@@ -49,6 +49,12 @@ export const AppContextProvider = ({ children }: Props) => {
     //check if storarage have token
     if (localStorage.getItem("access_token")) {
       setIsLoged(true);
+      // Проверяем, есть ли данные для Appwrite
+      const email = localStorage.getItem("userEmail");
+      const password = localStorage.getItem("userPassword");
+      if (!email || !password) {
+        console.warn("Appwrite credentials not found in localStorage");
+      }
     }
   }, []);
 
@@ -59,7 +65,7 @@ export const AppContextProvider = ({ children }: Props) => {
   const logOut = async () => {
     await localStorage.clear();
     await setIsLoged(false);
-    getBoard()
+    getBoard();
   };
 
   const getBoard = async () => {

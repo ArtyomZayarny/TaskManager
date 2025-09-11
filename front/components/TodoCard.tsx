@@ -28,13 +28,15 @@ function TodoCard({
   dragHandleProps,
   draggableProps,
 }: Props) {
-  const {deleteTask} = useContext(TaskContext)
+  const { deleteTask } = useContext(TaskContext);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (todo.image) {
       const fetchImage = async () => {
+        console.log("Fetching image for todo:", todo.image);
         const url = await getUrl(todo.image);
+        console.log("Got URL:", url);
 
         if (url) {
           setImageUrl(url.toString());
@@ -56,7 +58,7 @@ function TodoCard({
         <p>{todo.title}</p>
         <button
           className="text-red-500 hover:text-red-600"
-           onClick={() => deleteTask(index, todo, id)}
+          onClick={() => deleteTask(index, todo, id)}
         >
           <XCircleIcon className="ml-5 h-8 w-8" />
         </button>

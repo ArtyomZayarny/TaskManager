@@ -7,9 +7,8 @@ import { AppContext } from "@/context/app-context";
 import { TaskContext } from "@/context/task-context";
 
 export default function Board() {
-  const { board,setBoard } = useContext(AppContext);
-  const {updateTodoInDB} = useContext(TaskContext)
-
+  const { board, setBoard } = useContext(AppContext);
+  const { updateTodoInDB } = useContext(TaskContext);
 
   const handleOnDrugEnd = async (result: DropResult) => {
     const { destination, source, type } = result;
@@ -22,7 +21,7 @@ export default function Board() {
       const [removed] = entries.splice(source.index, 1);
       entries.splice(destination.index, 0, removed);
       const rerrangedColumns = new Map(entries);
-      setBoard({columns: rerrangedColumns });
+      setBoard({ columns: rerrangedColumns });
     }
 
     //This step is needed as the indexed are stored as numbers 0, 1,2 etc. Insted of the id's with DND library
@@ -90,7 +89,7 @@ export default function Board() {
       <Droppable droppableId="board" direction="horizontal" type="column">
         {(provided) => (
           <div
-            className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-7xl mx-auto "
+            className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-7xl mx-auto px-4"
             {...provided.droppableProps}
             ref={provided.innerRef}
           >
