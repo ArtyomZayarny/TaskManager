@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd front && npm run build",
+  "outputDirectory": "front/out",
+  "installCommand": "cd front && npm install",
+  "framework": "nextjs",
+  "rootDirectory": "front"
+}
