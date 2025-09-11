@@ -1,30 +1,32 @@
-//import { databases } from "@/appwrite";
-
 import { REQUEST_TASK } from "@/requests";
 import { Board, Column, TypedColumn } from "@/types";
 
 export const getTodosGroupedByColumn = async () => {
- const userId = JSON.parse(localStorage.getItem('userId'));
- const token = JSON.parse(localStorage.getItem('access_token'));
+  const userId =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("userId") || "null")
+      : null;
+  const token =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("access_token") || "null")
+      : null;
 
- let todos = [];
+  let todos = [];
 
- if(userId) {
-  const requestTasks = await fetch(`${REQUEST_TASK}/${userId}`,{
-    method:'GET',
-    mode:'cors',
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization" : `Bearer ${token}`
-    }
-  });
+  if (userId) {
+    const requestTasks = await fetch(`${REQUEST_TASK}/${userId}`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  todos = await requestTasks.json();
-  
- }
+    todos = await requestTasks.json();
+  }
 
-
-  const columns = todos.reduce((acc, todo) => {
+  const columns = todos.reduce((acc: Map<TypedColumn, Column>, todo: any) => {
     if (!acc.get(todo.status)) {
       acc.set(todo.status, {
         id: todo.status,
@@ -41,7 +43,6 @@ export const getTodosGroupedByColumn = async () => {
     return acc;
   }, new Map<TypedColumn, Column>());
 
-  //Add empty todos
   const columnTypes: TypedColumn[] = ["todo", "inprogress", "done"];
   for (const columnType of columnTypes) {
     if (!columns.get(columnType)) {
@@ -51,12 +52,10 @@ export const getTodosGroupedByColumn = async () => {
       });
     }
   }
-  //Sort column
-  const sortedColumns = new Map(
-    Array.from(columns.entries()).sort(
-      (a, b) => columnTypes.indexOf(a[0]) - columnTypes.indexOf(b[0])
-    )
-  );
+  const sortedEntries = (
+    Array.from(columns.entries()) as [TypedColumn, Column][]
+  ).sort((a, b) => columnTypes.indexOf(a[0]) - columnTypes.indexOf(b[0]));
+  const sortedColumns = new Map<TypedColumn, Column>(sortedEntries);
   const board: Board = {
     columns: sortedColumns,
   };

@@ -36,43 +36,37 @@ export const TaskContextProvider = ({ children }: Props) => {
   const [image, setImage] = useState(null);
   const [appwriteAuthChecked, setAppwriteAuthChecked] = useState(false);
 
-  let userId = null;
+  let userId: string | null = null;
 
-  if (localStorage.getItem("userId")) {
+  if (typeof window !== "undefined" && localStorage.getItem("userId")) {
     userId = JSON.parse(localStorage.getItem("userId")!);
-  } else {
-    userId = null;
   }
 
-  // Функция для синхронизации авторизации с Appwrite (вызывается только один раз)
   const ensureAppwriteAuth = async () => {
     if (appwriteAuthChecked) {
-      return; // Уже проверили авторизацию
+      return;
     }
 
     try {
-      // Проверяем, есть ли активная сессия
       const currentUser = await getCurrentAppwriteUser();
       if (!currentUser) {
-        // Если нет активной сессии, создаем её
-        const email = localStorage.getItem("userEmail");
-        const password = localStorage.getItem("userPassword");
+        const email =
+          typeof window !== "undefined"
+            ? localStorage.getItem("userEmail")
+            : null;
+        const password =
+          typeof window !== "undefined"
+            ? localStorage.getItem("userPassword")
+            : null;
 
         if (email && password) {
-          console.log("Creating Appwrite session...");
           await createAppwriteSession(email, password);
-          console.log("Appwrite session created successfully");
         } else {
-          console.log("No Appwrite credentials found in localStorage");
           throw new Error("No Appwrite credentials found");
         }
-      } else {
-        console.log("Appwrite session already active");
       }
       setAppwriteAuthChecked(true);
     } catch (error) {
-      console.error("Appwrite auth sync error:", error);
-      // Очищаем кэш при ошибке авторизации
       clearUserCache();
       throw error;
     }
@@ -85,7 +79,6 @@ export const TaskContextProvider = ({ children }: Props) => {
   ) => {
     let file = null;
 
-    //create task object
     const task = {
       title,
       status,
@@ -93,7 +86,6 @@ export const TaskContextProvider = ({ children }: Props) => {
       image,
     } as unknown as Todo;
 
-    //Upload image to appwrite
     if (image) {
       try {
         const fileUploaded = await uploadImage(image);
@@ -105,14 +97,15 @@ export const TaskContextProvider = ({ children }: Props) => {
           task.image = file;
         }
       } catch (e) {
-        console.log("Upload image error: ", e);
-        task.image = null;
+        task.image = undefined;
       }
     }
 
-    const token = JSON.parse(localStorage.getItem("access_token")!);
+    const token =
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("access_token") || "null")
+        : null;
 
-    // Add task request
     let newTask = {} as Todo;
     try {
       const request = await fetch(CREATE_TASK, {
@@ -128,12 +121,9 @@ export const TaskContextProvider = ({ children }: Props) => {
         throw new Error(`HTTP error! status: ${request.status}`);
       }
 
-      //Recive new task
       newTask = await request.json();
       return newTask;
-    } catch (e) {
-      console.log("Error adding new task", e);
-    }
+    } catch (e) {}
   };
 
   const deleteTask = async (taskIndex: number, todo: Todo, id: TypedColumn) => {
@@ -148,7 +138,10 @@ export const TaskContextProvider = ({ children }: Props) => {
 
     if (!todo.id) return;
 
-    const token = JSON.parse(localStorage.getItem("access_token")!);
+    const token =
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("access_token") || "null")
+        : null;
 
     try {
       await fetch(`${REQUEST_TASK}/${todo.id}`, {
@@ -159,15 +152,16 @@ export const TaskContextProvider = ({ children }: Props) => {
           Authorization: `Bearer ${token}`,
         },
       });
-    } catch (error) {
-      console.error("Error deleting task from database:", error);
-    }
+    } catch (error) {}
   };
 
-  const updateTodoInDB = async (id, status) => {
+  const updateTodoInDB = async (id: string, status: string) => {
     if (!id) return;
 
-    const token = JSON.parse(localStorage.getItem("access_token")!);
+    const token =
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("access_token") || "null")
+        : null;
 
     try {
       const request = await fetch(`${REQUEST_TASK}/${id}`, {
@@ -181,10 +175,7 @@ export const TaskContextProvider = ({ children }: Props) => {
       });
 
       const res = await request.json();
-      console.log("res", res);
-    } catch (error) {
-      console.error("Error updating task in database:", error);
-    }
+    } catch (error) {}
   };
 
   const value = {

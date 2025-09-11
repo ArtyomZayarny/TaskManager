@@ -46,15 +46,10 @@ export const AppContextProvider = ({ children }: Props) => {
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
 
   useEffect(() => {
-    //check if storarage have token
     if (localStorage.getItem("access_token")) {
       setIsLoged(true);
-      // Проверяем, есть ли данные для Appwrite
       const email = localStorage.getItem("userEmail");
       const password = localStorage.getItem("userPassword");
-      if (!email || !password) {
-        console.warn("Appwrite credentials not found in localStorage");
-      }
     }
   }, []);
 

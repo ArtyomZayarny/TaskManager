@@ -34,10 +34,7 @@ function TodoCard({
   useEffect(() => {
     if (todo.image) {
       const fetchImage = async () => {
-        console.log("Fetching image for todo:", todo.image);
         const url = await getUrl(todo.image);
-        console.log("Got URL:", url);
-
         if (url) {
           setImageUrl(url.toString());
         }
@@ -63,7 +60,6 @@ function TodoCard({
           <XCircleIcon className="ml-5 h-8 w-8" />
         </button>
       </div>
-      {/*  Image */}
       {imageUrl && (
         <div className="relative h-full w-full rounded-b-md">
           <Image

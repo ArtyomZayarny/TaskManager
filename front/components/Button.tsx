@@ -4,7 +4,7 @@ import { useContext } from "react";
 type Props = {
   text: string;
   color: string;
-  type: string;
+  type: "button" | "submit" | "reset";
   withLoading?: boolean;
   toggleModalTypeHandler?: () => void;
 };

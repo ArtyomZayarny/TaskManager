@@ -5,6 +5,7 @@ import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import Column from "./Column";
 import { AppContext } from "@/context/app-context";
 import { TaskContext } from "@/context/task-context";
+import { Column as ColumnType } from "@/types";
 
 export default function Board() {
   const { board, setBoard } = useContext(AppContext);
@@ -15,7 +16,6 @@ export default function Board() {
 
     if (!destination) return;
 
-    //handle column drag
     if (type === "column") {
       const entries = Array.from(board.columns.entries());
       const [removed] = entries.splice(source.index, 1);
@@ -24,22 +24,20 @@ export default function Board() {
       setBoard({ columns: rerrangedColumns });
     }
 
-    //This step is needed as the indexed are stored as numbers 0, 1,2 etc. Insted of the id's with DND library
     const columns = Array.from(board.columns);
     const startColIndex = columns[Number(source.droppableId)];
     const finisheColIndex = columns[Number(destination.droppableId)];
 
-    const startCol: Column = {
+    const startCol: ColumnType = {
       id: startColIndex[0],
       todos: startColIndex[1].todos,
     };
 
-    const finishCol: Column = {
+    const finishCol: ColumnType = {
       id: finisheColIndex[0],
       todos: finisheColIndex[1].todos,
     };
 
-    //if u grag in same  position
     if (!startCol || !finishCol) return;
 
     if (source.index === destination.index && startCol === finishCol) return;
@@ -48,7 +46,6 @@ export default function Board() {
     const [todoMoved] = newTodos.splice(source.index, 1);
 
     if (startCol.id === finishCol.id) {
-      //same column task drag
       newTodos.splice(destination.index, 0, todoMoved);
       const newCol = {
         id: startCol.id,
@@ -60,9 +57,6 @@ export default function Board() {
 
       setBoard({ columns: newColumns });
     } else {
-      //dragging to another column
-
-      //Make a copy of th efinish column and splice
       const finishTodos = Array.from(finishCol.todos);
       finishTodos.splice(destination.index, 0, todoMoved);
 
@@ -78,7 +72,6 @@ export default function Board() {
         todos: finishTodos,
       });
 
-      //Update  board  store in Db
       await updateTodoInDB(todoMoved.id, finishCol.id);
       setBoard({ columns: newColumns });
     }

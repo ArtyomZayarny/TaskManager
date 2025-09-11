@@ -81,15 +81,11 @@ export const Modal = () => {
         storeToLS("access_token", access_token);
         userId !== undefined && storeToLS("userId", userId);
 
-        // Создаем сессию в Appwrite
         try {
           await createAppwriteSession(creads.login, creads.password);
-          // Сохраняем данные для будущих сессий
           storeToLS("userEmail", creads.login);
           storeToLS("userPassword", creads.password);
-        } catch (appwriteError) {
-          console.error("Appwrite login error:", appwriteError);
-        }
+        } catch (appwriteError) {}
 
         afterLogin();
       }
@@ -108,15 +104,11 @@ export const Modal = () => {
         storeToLS("access_token", access_token);
         userId !== undefined && storeToLS("userId", userId);
 
-        // Создаем аккаунт в Appwrite
         try {
           await createAppwriteAccount(creads.login, creads.password);
-          // Сохраняем данные для будущих сессий
           storeToLS("userEmail", creads.login);
           storeToLS("userPassword", creads.password);
-        } catch (appwriteError) {
-          console.error("Appwrite registration error:", appwriteError);
-        }
+        } catch (appwriteError) {}
 
         afterRegister();
       }

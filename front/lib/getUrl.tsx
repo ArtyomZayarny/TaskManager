@@ -1,4 +1,5 @@
 import { storage } from "@/appwrite";
+import { Image } from "@/types";
 
 export const getUrl = async (image: Image | undefined) => {
   if (!image) return;
@@ -7,7 +8,6 @@ export const getUrl = async (image: Image | undefined) => {
       const url = storage.getFileView(image.bucketId, image.fileId);
       return url;
     } catch (error) {
-      console.error("Error getting file URL:", error);
       return null;
     }
   }
