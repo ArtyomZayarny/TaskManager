@@ -1,18 +1,14 @@
-import { ID, storage, client } from "@/appwrite";
+import { ID, storage, client, account } from "@/appwrite";
 
 export const uploadImagePublic = async (file: File) => {
   if (!file) return;
 
   try {
-    // Получаем токен для авторизации в Appwrite
-    const token =
-      typeof window !== "undefined"
-        ? JSON.parse(localStorage.getItem("access_token") || "null")
-        : null;
-    
-    if (token) {
-      // Устанавливаем JWT токен для клиента Appwrite
-      client.setJWT(token);
+    // Создаем анонимную сессию для загрузки файлов
+    try {
+      await account.createAnonymousSession();
+    } catch (e) {
+      // Игнорируем ошибки, если сессия уже существует
     }
 
     const fileUploaded = await storage.createFile(

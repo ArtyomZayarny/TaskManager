@@ -133,18 +133,13 @@ export const TaskContextProvider = ({ children }: Props) => {
     setBoard({ columns: newColumns });
 
     if (todo.image) {
-      // Получаем токен для авторизации в Appwrite
-      const token =
-        typeof window !== "undefined"
-          ? JSON.parse(localStorage.getItem("access_token") || "null")
-          : null;
-
-      if (token) {
-        // Устанавливаем JWT токен для клиента Appwrite
-        client.setJWT(token);
+      try {
+        // Используем Appwrite сессию для авторизации
+        await storage.deleteFile(todo.image.bucketId, todo.image.fileId);
+      } catch (error) {
+        console.error("Error deleting file from Appwrite:", error);
+        // Если не удалось удалить файл, продолжаем без ошибки
       }
-
-      await storage.deleteFile(todo.image.bucketId, todo.image.fileId);
     }
 
     if (!todo.id) return;
