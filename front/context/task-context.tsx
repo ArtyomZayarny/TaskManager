@@ -3,7 +3,7 @@ import { CREATE_TASK, REQUEST_TASK } from "@/requests";
 import React, { createContext, useContext, useState } from "react";
 import { AppContext } from "./app-context";
 import { uploadImage } from "@/lib/uploadImage";
-import { storage } from "@/appwrite";
+import { storage, client } from "@/appwrite";
 import { Image, Todo, TypedColumn } from "@/types";
 import {
   createAppwriteSession,
@@ -133,6 +133,17 @@ export const TaskContextProvider = ({ children }: Props) => {
     setBoard({ columns: newColumns });
 
     if (todo.image) {
+      // Получаем токен для авторизации в Appwrite
+      const token =
+        typeof window !== "undefined"
+          ? JSON.parse(localStorage.getItem("access_token") || "null")
+          : null;
+
+      if (token) {
+        // Устанавливаем JWT токен для клиента Appwrite
+        client.setJWT(token);
+      }
+
       await storage.deleteFile(todo.image.bucketId, todo.image.fileId);
     }
 
