@@ -55,7 +55,7 @@ export const Modal = () => {
     setIsLoged(true);
     setIsLoading(false);
     clearForm();
-    getBoard(await getTodosGroupedByColumn());
+    await getBoard();
   }, [clearForm, getBoard, setIsModalOpen, setIsLoged, setIsLoading]);
 
   const afterRegister = useCallback(() => {
@@ -90,7 +90,7 @@ export const Modal = () => {
     } catch (e) {
       setIsLoading(false);
     }
-  }, [afterLogin, setErrors]);
+  }, [afterLogin, setErrors, setIsLoading]);
 
   const register = useCallback(async (creads: UserCreads) => {
     try {
@@ -113,7 +113,7 @@ export const Modal = () => {
     } catch (e) {
       setIsLoading(false);
     }
-  }, [afterRegister, setErrors]);
+  }, [afterRegister, setErrors, setIsLoading]);
 
   const onSubmitHandler = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

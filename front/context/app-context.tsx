@@ -17,9 +17,9 @@ type AppContextType = {
   setSearchString: (v: string) => void;
   modalType: string;
   setModalType: (v: string) => void;
-  getBoard: (board: Board) => Board;
+  getBoard: () => Promise<void>;
   board: Board;
-  setBoard: (v: Board) => Board;
+  setBoard: (v: Board) => void;
   showAddTaskModal: boolean;
   setShowAddTaskModal: (v: boolean) => void;
   logOut: () => void;
