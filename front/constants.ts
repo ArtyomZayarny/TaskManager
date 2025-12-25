@@ -3,7 +3,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 // Настройки для разных окружений
 export const BASE_URL = isProduction
-  ? "https://taskmanager-l9xv.onrender.com"
+  ? process.env.API_BASE_URL
   : "http://localhost";
 export const BASE_PORT = isProduction ? "" : "3001";
 export const BASE_PREFIX = "api";
