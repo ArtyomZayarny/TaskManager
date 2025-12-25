@@ -2,7 +2,7 @@
 
 import { AppContext } from "@/context/app-context";
 import { Dialog } from "@headlessui/react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useCallback, useEffect } from "react";
 import { Button } from "./Button";
 import { REQUEST_LOGIN, REQUEST_REGISTER } from "@/requests";
 import { AuthRequest, setAccessTokenToLS, storeToLS } from "@/utils";
@@ -36,44 +36,40 @@ export const Modal = () => {
 
   const signIn = modalType === "Sign in";
 
-  const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const creads: UserCreads = { login: email, password };
-    setIsLoading(true);
-    return signIn ? login(creads) : register(creads);
-  };
+  useEffect(() => {
+    if (isModalOpen) {
+      setEmail("");
+      setPassword("");
+      setError("");
+      setCongrat(false);
+    }
+  }, [isModalOpen, setError]);
 
-  const toggleModalTypeHandler = () => {
-    setError("");
-    clearForm();
-    signIn ? setModalType("Sign up") : setModalType("Sign in");
-  };
-
-  const clearForm = () => {
+  const clearForm = useCallback(() => {
     setEmail("");
     setPassword("");
-  };
+  }, []);
 
-  const afterLogin = async () => {
+  const afterLogin = useCallback(async () => {
     setIsModalOpen(false);
     setIsLoged(true);
     setIsLoading(false);
     clearForm();
     getBoard(await getTodosGroupedByColumn());
-  };
+  }, [clearForm, getBoard, setIsModalOpen, setIsLoged, setIsLoading]);
 
-  const afterRegister = () => {
+  const afterRegister = useCallback(() => {
     setIsLoged(true);
     setIsLoading(false);
     setCongrat(true);
-  };
+  }, [setIsLoged, setIsLoading]);
 
-  const setErrors = (response: AuthResponse) => {
+  const setErrors = useCallback((response: AuthResponse) => {
     setIsLoading(false);
     setError(response.message);
-  };
+  }, [setIsLoading, setError]);
 
-  const login = async (creads: UserCreads) => {
+  const login = useCallback(async (creads: UserCreads) => {
     try {
       const response = await AuthRequest(REQUEST_LOGIN, creads);
       const { access_token, userId } = response;
@@ -94,9 +90,9 @@ export const Modal = () => {
     } catch (e) {
       setIsLoading(false);
     }
-  };
+  }, [afterLogin, setErrors]);
 
-  const register = async (creads: UserCreads) => {
+  const register = useCallback(async (creads: UserCreads) => {
     try {
       const response = await AuthRequest(REQUEST_REGISTER, creads);
       const { access_token, userId } = response;
@@ -117,50 +113,30 @@ export const Modal = () => {
     } catch (e) {
       setIsLoading(false);
     }
-  };
+  }, [afterRegister, setErrors]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { type, value } = e.target;
-    switch (type) {
-      case "email":
-        return setEmail(value);
-      case "password":
-        return setPassword(value);
-    }
-  };
+  const onSubmitHandler = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const creads: UserCreads = { login: email, password };
+    setIsLoading(true);
+    return signIn ? login(creads) : register(creads);
+  }, [email, password, signIn, login, register, setIsLoading]);
 
-  const AuthForm = () => {
-    return (
-      <>
-        <form onSubmit={onSubmitHandler} className=" w-300">
-          <div className="mb-5">
-            <Input type="email" onChangeHandler={handleChange} value={email} />
-          </div>
-          <div className="mb-5">
-            <Input
-              type="password"
-              onChangeHandler={handleChange}
-              value={password}
-            />
-          </div>
-          {error && <ErrorMessage error={error} />}
-          <Button
-            type="submit"
-            color={signIn ? "blue" : "green"}
-            text={signIn ? "Log in" : "Register"}
-            withLoading
-          />
-        </form>
-        <span className="text-center w-full inline-block my-2">or</span>
-        <Button
-          text={signIn ? "Register" : "Log in"}
-          color={signIn ? "green" : "blue"}
-          type="button"
-          toggleModalTypeHandler={toggleModalTypeHandler}
-        />
-      </>
-    );
-  };
+  const toggleModalTypeHandler = useCallback(() => {
+    setError("");
+    clearForm();
+    signIn ? setModalType("Sign up") : setModalType("Sign in");
+  }, [signIn, clearForm, setError, setModalType]);
+
+
+
+  const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  }, []);
+
+  const handlePasswordChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  }, []);
 
   const onModalClosehandler = () => {
     setIsModalOpen(false);
@@ -189,7 +165,34 @@ export const Modal = () => {
           {congrats ? (
             <Congrats onModalClosehandler={onModalClosehandler} />
           ) : (
-            <AuthForm />
+            <>
+              <form onSubmit={onSubmitHandler} className=" w-300">
+                <div className="mb-5">
+                  <Input type="email" onChangeHandler={handleEmailChange} value={email} />
+                </div>
+                <div className="mb-5">
+                  <Input
+                    type="password"
+                    onChangeHandler={handlePasswordChange}
+                    value={password}
+                  />
+                </div>
+                {error && <ErrorMessage error={error} />}
+                <Button
+                  type="submit"
+                  color={signIn ? "blue" : "green"}
+                  text={signIn ? "Log in" : "Register"}
+                  withLoading
+                />
+              </form>
+              <span className="text-center w-full inline-block my-2">or</span>
+              <Button
+                text={signIn ? "Register" : "Log in"}
+                color={signIn ? "green" : "blue"}
+                type="button"
+                toggleModalTypeHandler={toggleModalTypeHandler}
+              />
+            </>
           )}
         </Dialog.Panel>
       </div>

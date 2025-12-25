@@ -14,6 +14,7 @@ export const Input = ({ type, value, onChangeHandler }: Props) => {
       placeholder={`Enter your ${type}`}
       value={value}
       required
+      autoComplete={type === "password" ? "new-password" : "off"}
       onChange={(e) => onChangeHandler(e)}
     />
   );

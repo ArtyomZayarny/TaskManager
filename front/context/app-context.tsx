@@ -2,7 +2,7 @@
 
 import { getTodosGroupedByColumn } from "@/lib/getTodosGroupedByColumn";
 import { Board, Column, TypedColumn } from "@/types";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useMemo, useCallback } from "react";
 
 type AppContextType = {
   isModalOpen: boolean;
@@ -53,22 +53,22 @@ export const AppContextProvider = ({ children }: Props) => {
     }
   }, []);
 
-  useEffect(() => {
-    getBoard();
+  const getBoard = useCallback(async () => {
+    const GroupedBoard = await getTodosGroupedByColumn();
+    await setBoard(GroupedBoard);
   }, []);
 
-  const logOut = async () => {
+  useEffect(() => {
+    getBoard();
+  }, [getBoard]);
+
+  const logOut = useCallback(async () => {
     await localStorage.clear();
     await setIsLoged(false);
     getBoard();
-  };
+  }, [getBoard]);
 
-  const getBoard = async () => {
-    const GroupedBoard = await getTodosGroupedByColumn();
-    await setBoard(GroupedBoard);
-  };
-
-  const value = {
+  const value = useMemo(() => ({
     setIsModalOpen,
     isModalOpen,
     isLogged,
@@ -87,7 +87,18 @@ export const AppContextProvider = ({ children }: Props) => {
     setBoard,
     showAddTaskModal,
     setShowAddTaskModal,
-  } as unknown as AppContextType;
+  } as AppContextType), [
+    isModalOpen,
+    isLogged,
+    isLoading,
+    error,
+    searchString,
+    modalType,
+    board,
+    showAddTaskModal,
+    logOut,
+    getBoard,
+  ]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
