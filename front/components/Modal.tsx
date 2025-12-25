@@ -189,7 +189,7 @@ export const Modal = () => {
           {congrats ? (
             <Congrats onModalClosehandler={onModalClosehandler} />
           ) : (
-            AuthForm()
+            <AuthForm />
           )}
         </Dialog.Panel>
       </div>

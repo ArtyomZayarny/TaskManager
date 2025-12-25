@@ -20,13 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AppContextProvider>
-          <TaskContextProvider>
+        <AppContextProvider> 
+          <TaskContextProvider> 
             {children}
             <Modal />
             <AddTaskModal />
-          </TaskContextProvider>
-        </AppContextProvider>
+           </TaskContextProvider>
+         </AppContextProvider>
       </body>
     </html>
   );
