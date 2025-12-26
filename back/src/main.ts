@@ -10,24 +10,6 @@ async function bootstrap() {
     process.env.CLIENT_URL,
   ].filter(Boolean);
 
-  // Explicitly handle OPTIONS requests for CORS preflight
-  app.use((req, res, next) => {
-    if (req.method === 'OPTIONS') {
-      const origin = req.headers.origin;
-      if (origin && allowedOrigins.includes(origin)) {
-        res.header('Access-Control-Allow-Origin', origin);
-      } else if (allowedOrigins.length > 0) {
-        res.header('Access-Control-Allow-Origin', allowedOrigins[0]);
-      }
-      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Origin, X-Requested-With');
-      res.header('Access-Control-Allow-Credentials', 'true');
-      res.header('Access-Control-Max-Age', '86400');
-      return res.status(204).send();
-    }
-    next();
-  });
-
   app.enableCors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps or curl requests)
@@ -54,6 +36,24 @@ async function bootstrap() {
     exposedHeaders: ['Authorization'],
     preflightContinue: false,
     optionsSuccessStatus: 204,
+  });
+
+  // Explicitly handle OPTIONS requests AFTER CORS is enabled
+  app.use((req, res, next) => {
+    if (req.method === 'OPTIONS') {
+      const origin = req.headers.origin;
+      if (origin && allowedOrigins.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin);
+      } else if (allowedOrigins.length > 0) {
+        res.header('Access-Control-Allow-Origin', allowedOrigins[0]);
+      }
+      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Origin, X-Requested-With');
+      res.header('Access-Control-Allow-Credentials', 'true');
+      res.header('Access-Control-Max-Age', '86400');
+      return res.status(204).end();
+    }
+    next();
   });
 
   app.setGlobalPrefix("api");
