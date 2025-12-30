@@ -1,14 +1,14 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://trello-clone-tau-sage.vercel.app',
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
-  const allowedOrigins = [
-    'http://localhost:3000',
-    'https://trello-clone-tau-sage.vercel.app',
-    process.env.CLIENT_URL,
-  ].filter(Boolean);
 
   // Handle preflight EARLY (BEFORE guards/controllers can block it)
   app.use((req, res, next) => {
@@ -17,7 +17,7 @@ async function bootstrap() {
       if (origin && allowedOrigins.includes(origin)) {
         res.header('Access-Control-Allow-Origin', origin);
       }
-      res.header('Vary', 'Origin'); // Important for CDN caching
+      res.header('Vary', 'Origin');
       res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
       res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Origin, X-Requested-With');
       res.header('Access-Control-Allow-Credentials', 'true');
@@ -29,7 +29,6 @@ async function bootstrap() {
   // Main CORS config
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) {
         return callback(null, true);
       }
@@ -59,4 +58,5 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT || 3001);
 }
+
 bootstrap();
