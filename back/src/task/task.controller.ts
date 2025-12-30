@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, NotFoundException, Param,  Patch,  Post,
 import { TaskDto } from './dto/task.dto';
 import { TaskService } from './task.service';
 import { TASK_NOT_FOUND } from './constants';
-import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
+import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 
 @Controller('task')
 export class TaskController {
