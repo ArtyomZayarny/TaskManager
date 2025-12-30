@@ -1,5 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
+import { ExpressAdapter } from "@nestjs/platform-express";
 
 const allowedOrigins = [
   'http://localhost:3000',
@@ -7,8 +8,16 @@ const allowedOrigins = [
   process.env.CLIENT_URL,
 ].filter(Boolean);
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+let cachedApp: any;
+
+export async function createApp() {
+  if (cachedApp) {
+    return cachedApp;
+  }
+
+  const express = require('express');
+  const server = express();
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
   // Handle preflight EARLY (BEFORE guards/controllers can block it)
   app.use((req, res, next) => {
@@ -56,7 +65,17 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api");
 
-  await app.listen(process.env.PORT || 3001);
+  await app.init();
+  cachedApp = server;
+  return server;
 }
 
-bootstrap();
+// For local development
+if (!process.env.VERCEL) {
+  (async () => {
+    const app = await createApp();
+    app.listen(process.env.PORT || 3001, () => {
+      console.log(`Server is running on port ${process.env.PORT || 3001}`);
+    });
+  })();
+}
