@@ -24,12 +24,16 @@ export class AuthController {
 
   @Post("login")
   async login(@Body() { login, password }: AuthDto) {
-    console.log("login", login);
-    console.log("password", password);
-    //Validate user
-    const { email, _id } = await this.authService.validateUser(login, password);
+    try {
+      console.log("login attempt:", login);
+      //Validate user - login is actually email
+      const { email, _id } = await this.authService.validateUser(login, password);
 
-    //login user
-    return this.authService.login(email, _id);
+      //login user
+      return this.authService.login(email, _id);
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error;
+    }
   }
 }

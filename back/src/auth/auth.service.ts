@@ -16,28 +16,46 @@ export class AuthService {
   ) {}
 
   async findUser(email: string) {
-    return this.userModel.findOne({ email }).exec();
+    try {
+      console.log("findUser called with email:", email);
+      const user = await this.userModel.findOne({ email }).exec();
+      return user;
+    } catch (error) {
+      console.error("findUser database error:", error);
+      throw error;
+    }
   }
 
   async validateUser(
     email: string,
     password: string
   ): Promise<Pick<UserModel, "email" | "_id">> {
-    //Check if user exist
-    const user = await this.findUser(email);
+    try {
+      console.log("validateUser called with email:", email);
+      //Check if user exist
+      const user = await this.findUser(email);
+      console.log("User found:", user ? "yes" : "no");
 
-    if (!user) {
-      throw new UnauthorizedException(USER_NOT_FOUNDED);
+      if (!user) {
+        throw new UnauthorizedException(USER_NOT_FOUNDED);
+      }
+
+      //Check if password is match
+      const isPasswordMatch = await compare(password, user.passwordHash);
+
+      if (!isPasswordMatch) {
+        throw new UnauthorizedException(WRONG_PASSWORD);
+      }
+
+      return { email: user.email, _id: user._id };
+    } catch (error) {
+      console.error("validateUser error:", error);
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      // If it's a database error or other error, wrap it
+      throw new UnauthorizedException("Authentication failed");
     }
-
-    //Check if password is match
-    const isPasswordMatch = await compare(password, user.passwordHash);
-
-    if (!isPasswordMatch) {
-      throw new UnauthorizedException(WRONG_PASSWORD);
-    }
-
-    return { email: user.email, _id: user._id };
   }
 
   async login(email: string, userId: Types.ObjectId) {
