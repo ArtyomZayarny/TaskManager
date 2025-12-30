@@ -3,7 +3,6 @@ import {
   Body,
   Controller,
   Post,
-  Request,
 } from "@nestjs/common";
 import { AuthDto } from "./dto/auth.dto";
 import { AuthService } from "./auth.service";
@@ -24,25 +23,15 @@ export class AuthController {
 
   @Post("login")
   async login(@Body() { login, password }: AuthDto) {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/3937f987-7605-4960-a902-926a58bb3c7e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'auth.controller.ts:26',message:'login entry',data:{login,passwordLength:password?.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-    // #endregion
     try {
       console.log("login attempt:", login);
       //Validate user - login is actually email
       const { email, _id } = await this.authService.validateUser(login, password);
 
       //login user
-      const result = await this.authService.login(email, _id);
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/3937f987-7605-4960-a902-926a58bb3c7e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'auth.controller.ts:33',message:'login success',data:{hasAccessToken:!!result?.access_token,hasUserId:!!result?.userId},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
-      return result;
+      return this.authService.login(email, _id);
     } catch (error) {
       console.error("Login error:", error);
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/3937f987-7605-4960-a902-926a58bb3c7e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'auth.controller.ts:36',message:'login error',data:{errorMessage:error?.message,errorStatus:error?.status,errorName:error?.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-      // #endregion
       throw error;
     }
   }
