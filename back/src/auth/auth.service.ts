@@ -77,14 +77,22 @@ export class AuthService {
       return { email: user.email, _id: user._id };
     } catch (error) {
       console.error("validateUser error:", error);
+      console.error("validateUser error details:", {
+        message: error?.message,
+        status: error?.status,
+        name: error?.name,
+        stack: error?.stack,
+        isUnauthorized: error instanceof UnauthorizedException
+      });
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/3937f987-7605-4960-a902-926a58bb3c7e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'auth.service.ts:52',message:'validateUser catch',data:{errorMessage:error?.message,errorStatus:error?.status,errorName:error?.name,isUnauthorized:error instanceof UnauthorizedException},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+      fetch('http://127.0.0.1:7242/ingest/3937f987-7605-4960-a902-926a58bb3c7e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'auth.service.ts:52',message:'validateUser catch',data:{errorMessage:error?.message,errorStatus:error?.status,errorName:error?.name,isUnauthorized:error instanceof UnauthorizedException,errorStack:error?.stack?.substring(0,200)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
       // #endregion
       if (error instanceof UnauthorizedException) {
         throw error;
       }
-      // If it's a database error or other error, wrap it
-      throw new UnauthorizedException("Authentication failed");
+      // If it's a database error or other error, log the real error and wrap it
+      console.error("Real error before wrapping:", error);
+      throw new UnauthorizedException(`Authentication failed: ${error?.message || 'Unknown error'}`);
     }
   }
 
