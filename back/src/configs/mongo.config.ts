@@ -19,4 +19,7 @@ const getMongoString = (configService: ConfigService) => {
 const getMongoOptions = () => ({
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+  connectTimeoutMS: 10000,
 });
