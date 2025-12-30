@@ -73,9 +73,11 @@ export const Modal = () => {
     try {
       const response = await AuthRequest(REQUEST_LOGIN, creads);
       const { access_token, userId } = response;
-      if (!response.error && !localStorage.getItem("access_token")) {
+      if (!response.error && access_token && !localStorage.getItem("access_token")) {
         storeToLS("access_token", access_token);
-        userId !== undefined && storeToLS("userId", userId);
+        if (userId !== undefined && userId !== null) {
+          storeToLS("userId", userId);
+        }
 
         try {
           await createAppwriteSession(creads.login, creads.password);
@@ -96,9 +98,11 @@ export const Modal = () => {
     try {
       const response = await AuthRequest(REQUEST_REGISTER, creads);
       const { access_token, userId } = response;
-      if (!response.error && !localStorage.getItem("access_token")) {
+      if (!response.error && access_token && !localStorage.getItem("access_token")) {
         storeToLS("access_token", access_token);
-        userId !== undefined && storeToLS("userId", userId);
+        if (userId !== undefined && userId !== null) {
+          storeToLS("userId", userId);
+        }
 
         try {
           await createAppwriteAccount(creads.login, creads.password);

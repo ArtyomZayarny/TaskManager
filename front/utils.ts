@@ -1,6 +1,10 @@
 import { UserCreads } from "./types";
 
-export const storeToLS = (key: string, value: string) => {
+export const storeToLS = (key: string, value: any) => {
+  // Don't store undefined or null values
+  if (value === undefined || value === null) {
+    return;
+  }
   localStorage.setItem(key, JSON.stringify(value));
 };
 
